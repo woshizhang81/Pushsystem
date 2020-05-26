@@ -13,6 +13,7 @@ type OnClose  func(handle interface{},conn net.Conn)
 type TcpServer interface {
 	Create(ipAddr string, port uint16) bool
 	ShutDown()
+	Send  (conn net.Conn, buf []byte)
 	SetCallBackHandle(handle interface{})
 	SetAcceptCallback(fun OnAccept)
 	SetReceiveCallback(fun OnReceive)

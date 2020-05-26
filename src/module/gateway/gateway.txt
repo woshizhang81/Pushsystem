@@ -1,44 +1,22 @@
-package gateway
+//package gatewaydddddd
 
 import (
-	"PushSystem/src/module/gateway/backend"
-	"PushSystem/src/module/gateway/frontend"
-	"PushSystem/src/utils"
-	timer2 "PushSystem/src/utils/timer"
+	"Pushsystem/src/module/gateway/backend"
+	"Pushsystem/src/module/gateway/frontend"
+	"Pushsystem/src/utils"
+	timer2 "Pushsystem/src/utils/timer"
 	"github.com/BurntSushi/toml"
 	"log"
 	"os"
+	"Pushsystem/src/module/gateway/datadef"
 )
 
 const ConfigName = "gateway.toml"
-type FrontConfig struct {
-	QpsLimit int16//qps 限制
-	MaxConn int32   //最大客户端连接数字
-	SlotNum int16 		//槽位数量
-	BlackListNum int16      //黑名单长度
-	Ip string				//ip地址
-	Port uint16				//端口号
-}
-
-type BackConfig struct {
-	QpsLimit int16//qps 限制
-	MaxConn int32   //最大客户端连接数字
-	SlotNum int16 		//槽位数量
-	BlackListNum int16      //黑名单长度
-	Ip 		string				//ip地址
-	Port 	int16				//端口号
-}
-/*gateway module 配置*/
-type GateWayConfig struct{
-	Module string
-	Frontend FrontConfig
-	Backend	 BackConfig
-}
 
 type GateWay struct{
-	config  GateWayConfig
+	config   datadef.GateWayConfig
 	frontEnd frontend.FrontModule
-	backEnd	 backend.BackModule
+	backEnd  backend.BackModule
 	timer    timer2.CronTimer
 }
 
@@ -46,7 +24,7 @@ func (handle *GateWay)loadConfig() bool {
 	filename := utils.GetConfigPath()+ ConfigName
 	_, err := toml.DecodeFile(filename,&handle.config)
 	if err != nil{
-		msg := "config file :"+ filename +"load failed"
+		msg := "datadef file :"+ filename +"load failed"
 		log.Fatal(msg)
 		os.Exit(1)
 		return false

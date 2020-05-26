@@ -1,21 +1,20 @@
 package main
 
 import (
-	config2 "PushSystem/src/config"
-	"PushSystem/src/module"
-	"PushSystem/src/module/gateway"
-	"fmt"
-	"log"
+	config2 "Pushsystem/src/config"
+	"Pushsystem/src/module"
 	"os"
+	"fmt"
 	"os/signal"
 	"syscall"
+	"log"
+	"Pushsystem/src/module/gateway/entrance"
 )
 
 func init(){
 	//加载配置
 	//创建goroutine pool
 	//redis pool
-
 }
 
 var thApp module.Module
@@ -25,10 +24,10 @@ func main(){
 	if nil ==  appConfig {
 		os.Exit(1)
 	}
-
 	fmt.Println("app name ",appConfig.AppName, "is starting")
+
 	if appConfig.Role== "gateway" {
-		thApp = &gateway.GateWay{}
+		thApp = &entrance.GateWay{}
 	}else {
 		fmt.Println("Role",appConfig.Role, "is not supported")
 		os.Exit(1)
@@ -40,6 +39,7 @@ func main(){
 	log.Println(<-ch)
 	// Stop the service gracefully.
 	thApp.Stop()
+
 }
 
 

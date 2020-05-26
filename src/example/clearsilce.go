@@ -1,7 +1,7 @@
 package main
 
 import (
-	"PushSystem/src/utils"
+	"Pushsystem/src/utils"
 	"fmt"
 	"os"
 )

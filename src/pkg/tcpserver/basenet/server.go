@@ -1,10 +1,11 @@
 package basenet
 
 import (
-	"PushSystem/src/pkg/tcpserver"
+	//"Pushsystem/src/pkg/tcpserver"
 	"bufio"
 	"fmt"
 	"net"
+	"Pushsystem/src/pkg/tcpserver"
 )
 
 /*
@@ -20,7 +21,6 @@ type NetServer struct {
 
 func (server *NetServer) SetCallBackHandle (handle interface{}){
 	server.callbackHandle = handle
-
 }
 
 func (server *NetServer)SetAcceptCallback(fun tcpserver.OnAccept){
@@ -91,6 +91,9 @@ func (server *NetServer ) Create (ipAddr string, port uint16) bool {
 	return true
 }
 
+func (server *NetServer)Send (conn net.Conn, buf []byte){
+
+}
 
 func (server *NetServer) ShutDown(){
 	server.listener.Close()

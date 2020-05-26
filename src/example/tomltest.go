@@ -17,7 +17,7 @@ type config struct {
 
 func test_toml() {
 	var cg config
-	var cpath string = "/home/work/goworkspace/src/PushSystem/src/example/example.toml"
+	var cpath string = "/home/work/goworkspace/src/Pushsystem/src/example/example.toml"
 	if _, err := toml.DecodeFile(cpath, &cg); err != nil {
 		log.Fatal(err)
 	}
@@ -43,11 +43,11 @@ func main()  {
 	fmt.Printf("%v\n" ,l)
 
 
-/*	path := "/home/work/goworkspace/src/PushSystem/conf/gateway.toml"
-	config := gateway.GateWayConfig{}
-	 _, err := toml.DecodeFile(path,&config)
+/*	path := "/home/work/goworkspace/src/Pushsystem/conf/gateway.toml"
+	datadef := gateway.GateWayConfig{}
+	 _, err := toml.DecodeFile(path,&datadef)
 	 if err != nil{
 	 	fmt.Println(err)
 	}
-	fmt.Printf("%v",config)*/
+	fmt.Printf("%v",datadef)*/
 }

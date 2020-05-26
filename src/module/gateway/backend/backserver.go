@@ -1,11 +1,14 @@
 package backend
 
 import (
-	"PushSystem/src/module/gateway"
-	"PushSystem/src/pkg/tcpserver"
-	"PushSystem/src/pkg/tcpserver/basenet"
+	"Pushsystem/src/pkg/tcpserver"
 	"sync"
+	"Pushsystem/src/pkg/tcpserver/basenet"
+	"Pushsystem/src/module/gateway/datadef"
+	"Pushsystem/src/module/gateway/callback"
 )
+
+
 
 type BackModule struct {
 	backEnd tcpserver.TcpServer
@@ -23,13 +26,14 @@ func GetInstance() *BackModule {
 
 func (handle *BackModule) Init(){
 	handle.backEnd = &basenet.NetServer{} //采用go程方式的结构可以改为epoll方式
-	handle.backEnd.SetAcceptCallback(gateway.BackOnAccept)
-	handle.backEnd.SetReceiveCallback(gateway.BackOnReceive)
-	handle.backEnd.SetCloseCallback(gateway.BackOnClose)
+	handle.backEnd.SetAcceptCallback (callback.BackOnAccept)
+	handle.backEnd.SetReceiveCallback(callback.BackOnReceive)
+	handle.backEnd.SetCloseCallback	 (callback.BackOnClose)
+
 }
 
-/**/
-func (handle *BackModule) Start(config gateway.GateWayConfig){
+
+func (handle *BackModule) Start(config datadef.GateWayConfig){
 	handle.backEnd.Create(config.Frontend.Ip,config.Frontend.Port)
 }
 

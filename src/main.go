@@ -1,12 +1,12 @@
 package main
 
 import (
-	"PushSystem/src/module"
-	"PushSystem/src/pkg/tcpserver/basenet"
+	"Pushsystem/src/module"
+	"Pushsystem/src/pkg/tcpserver/basenet"
 	"fmt"
 	"time"
 )
-import _ "PushSystem/src/pkg/tcpserver"
+import _ "Pushsystem/src/pkg/tcpserver"
 
 var moduleApp module.Module
 func init(){

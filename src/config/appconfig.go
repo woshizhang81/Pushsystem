@@ -1,7 +1,7 @@
 package config
 
 import (
-	"PushSystem/src/utils"
+	"Pushsystem/src/utils"
 	"github.com/BurntSushi/toml"
 	"log"
 	"sync"
@@ -29,7 +29,7 @@ func (obj * appConfig)LoadConfig()  *appConfig{
 	filename := utils.GetConfigPath() + AppConfigName
 	_, err := toml.DecodeFile(filename,obj)
 	if err != nil{
-		msg := "config file :"+ filename +"load failed"
+		msg := "datadef file :"+ filename +"load failed"
 		log.Fatal(msg)
 		return nil
 	}

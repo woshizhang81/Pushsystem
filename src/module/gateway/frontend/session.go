@@ -1,7 +1,7 @@
 package frontend
 
 import (
-	"PushSystem/src/utils"
+	"Pushsystem/src/utils"
 	"net"
 	"sync"
 )

@@ -1,8 +1,9 @@
-package gateway
+package callback
 
 import (
-	"PushSystem/src/module/gateway/frontend"
-	"PushSystem/src/utils"
+	//"Pushsystem/src/module"
+	"Pushsystem/src/module/gateway/frontend"
+	"Pushsystem/src/utils"
 	"net"
 )
 
@@ -34,6 +35,8 @@ func FrontOnReceive (handle interface{} ,conn net.Conn ,data []byte){
 			// 固定第四字节开始50 字节，不够补0
 			copy(v[3:50],[]byte(ipAddr))
 			//调用后端发送到manager里，按机房,qps量加权透传
+			//推到后端，由消费者消费 //逻辑就此完成
+			module.Channel.PutMessage(v[3:50])
 		}
 	}
 	module.SessionByIpManager.Add(ipAddr,session)

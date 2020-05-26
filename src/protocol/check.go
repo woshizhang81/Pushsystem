@@ -1,7 +1,7 @@
 package protocol
 
 import (
-	"PushSystem/src/utils"
+	"Pushsystem/src/utils"
 	"encoding/binary"
 	"fmt"
 )
