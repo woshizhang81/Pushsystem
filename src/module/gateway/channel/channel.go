@@ -3,6 +3,7 @@ package channel
 import (
 	"github.com/letsfire/factory"
 	"fmt"
+	"Pushsystem/src/module/gateway/backend"
 )
 
 type StreamChannel interface {
@@ -37,7 +38,6 @@ type MsgUpStream struct {
 
 func TaskLineExcute(args interface{}) {
 	body := args.(MsgUpStream)
-
 	fmt.Println("将要被发送到后端的数据包",body.args.([]byte))
 	// 1. 按轮训方式或者配置的
 	// 2. manager权重 发送
@@ -47,6 +47,7 @@ func (obj * UpStreamChannel) Init()  {
 	obj.GoPool = factory.NewMaster(UpStreamGoRoutineMaxNum, UpStreamGoRoutineInitNum)
 	obj.MsgQueue = make(chan []byte, MessageQueueCapity)
 	obj.TaskLine = obj.GoPool.AddLine(TaskLineExcute)
+	obj.Consumer = backend.GetInstance()
 }
 
 func (obj * UpStreamChannel) Start()  {

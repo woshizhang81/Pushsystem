@@ -14,7 +14,7 @@ type BackConfig struct {
 	SlotNum int16 		//槽位数量
 	BlackListNum int16      //黑名单长度
 	Ip 		string				//ip地址
-	Port 	int16				//端口号
+	Port 	uint16				//端口号
 }
 /*gateway module 配置*/
 type GateWayConfig struct{

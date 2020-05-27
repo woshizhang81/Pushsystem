@@ -9,6 +9,7 @@ import (
 	"log"
 	"os"
 	"Pushsystem/src/module/gateway/datadef"
+	"fmt"
 )
 
 const ConfigName = "gateway.toml"
@@ -40,6 +41,7 @@ func (handle *GateWay) Start()  {
 	}
 	//开启前端
 	handle.frontEnd.Init()
+	fmt.Printf("%v" , handle.config)
 	handle.frontEnd.Start(handle.config)
 
 	//开启后端

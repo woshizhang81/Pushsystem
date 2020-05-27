@@ -32,9 +32,8 @@ func (handle *BackModule) Init(){
 
 }
 
-
 func (handle *BackModule) Start(config datadef.GateWayConfig){
-	handle.backEnd.Create(config.Frontend.Ip,config.Frontend.Port)
+	handle.backEnd.Create(config.Frontend.Ip,config.Backend.Port)
 }
 
 //

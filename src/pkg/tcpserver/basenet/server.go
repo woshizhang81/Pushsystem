@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net"
 	"Pushsystem/src/pkg/tcpserver"
+	"strconv"
 )
 
 /*
@@ -63,13 +64,14 @@ func process(conn net.Conn, handle *NetServer) {
 			break
 		}
 		//data = append(data,buf...)  //... 切片打散
-		handle.receiveCallback(handle.callbackHandle,conn,buf)
+		handle.receiveCallback(handle.callbackHandle,conn,buf[:n-1])
 		//		fmt.Printf("receive from client, data: %v\n", buf)
 	}
 }
 
 func (server *NetServer ) Create (ipAddr string, port uint16) bool {
-	address := ipAddr + string(port)
+	address := ipAddr + ":" + strconv.Itoa(int(port))
+	fmt.Println(address)
 	listener, err := net.Listen("tcp", address)
 	server.listener = listener
 	if err != nil {
@@ -80,7 +82,7 @@ func (server *NetServer ) Create (ipAddr string, port uint16) bool {
 	//3.create goroutine for each request
 	for {
 		conn, err := server.listener.Accept()
-		if err == nil { //此处要判断的还有信号打断的情况
+		if err != nil { //此处要判断的还有信号打断的情况
 			fmt.Printf("accept fail, err: %v\n", err)
 			break
 		}
