@@ -19,6 +19,7 @@ type  SessionByIp struct {
 }
 
 func (obj *SessionByIp)Init(){
+	obj.ProtoCheck = protocol.ProtoCheck{}
 	obj.ProtoCheck.Init()
 }
 

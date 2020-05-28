@@ -4,6 +4,7 @@ import (
 	"Pushsystem/src/utils"
 	"encoding/binary"
 	"fmt"
+	"container/list"
 )
 
 /*
@@ -13,29 +14,23 @@ import (
 
 const DefaultCapLength = 4096
 //得到完整的一帧数据
-type CallBackOnGetStream func (handle *ProtoCheck , stream []byte)
 
+//type OnGetFrame func (handle * interface{},buf []byte)
 
 type ProtoCheck struct{
-	Handle   interface{} //句柄 相关对象的
 	storeBuf []byte	   //负责包的拼接
-	//CallBack CallBackOnGetStream
+//	handle interface{}
+//	callback OnGetFrame
 }
 
 func (obj *ProtoCheck)Init()  {
-	obj.storeBuf = make([]byte ,DefaultCapLength, DefaultCapLength)
+	obj.storeBuf = make([]byte , 0 , DefaultCapLength)
 }
-
-func (obj *ProtoCheck)SetCallBack(cbfun CallBackOnGetStream,handle interface{}) {
-	//obj.CallBack = cbfun
-	obj.Handle = handle
-}
-
-
 /*
 	list 保存了解出来的帧
 */
-func (obj *ProtoCheck)CheckAndGetProtocolBuffer(bufRcv []byte,allbuffer [][]byte) bool  {
+//func (obj *ProtoCheck)CheckAndGetProtocolBuffer(bufRcv []byte,allbuffer [][]byte) bool  {
+	func (obj *ProtoCheck)CheckAndGetProtocolBuffer(bufRcv []byte,list *list.List ) bool  {
 	//找到 头为0xff 0xff 的起始地址
 	obj.storeBuf = append(obj.storeBuf, bufRcv[:]...)
 	fixHead := [2]byte{0xff,0xff}
@@ -45,7 +40,7 @@ func (obj *ProtoCheck)CheckAndGetProtocolBuffer(bufRcv []byte,allbuffer [][]byte
 			obj.storeBuf = append(obj.storeBuf[0:0], 0xff)
 			return false
 		}else {
-			fmt.Println(obj.storeBuf)
+			//fmt.Println(obj.storeBuf)
 			obj.storeBuf = obj.storeBuf[0:0] //清空该buf
 			return false
 		}
@@ -57,8 +52,7 @@ func (obj *ProtoCheck)CheckAndGetProtocolBuffer(bufRcv []byte,allbuffer [][]byte
 		}else {
 			//一般情况在这里
 			//开始按规则截取包
-			obj.decodeFromBinaryStream(allbuffer)
-
+			obj.decodeFromBinaryStream(list)
 		}
 	}
 
@@ -67,57 +61,43 @@ func (obj *ProtoCheck)CheckAndGetProtocolBuffer(bufRcv []byte,allbuffer [][]byte
 
 /*
 	从数据流中解码按规则解码
-	headSize  offset (2)
-	PackType  offset (2 + headSize)
 	PackSize  offset (2 + headSize + 1)
 */
-const HeadSizeOffset = 2
-const PackageSizeBytes  = 2
+const packageSizeOffset = 2
 
-func (obj *ProtoCheck) decodeFromBinaryStream(allbuffer [][]byte)  bool {
-	//func (obj *ProtoCheck) decodeFromBinaryStream(list *list.List)  bool {
+//func (obj *ProtoCheck) decodeFromBinaryStream(allbuffer [][]byte)  bool {
+	func (obj *ProtoCheck) decodeFromBinaryStream(list *list.List)  bool {
 	curBufLen := uint16(len(obj.storeBuf))
-	if curBufLen < 3 { //说明当前buf 不包含 Head中的 HeadSize
+	if curBufLen < 2 { //说明当前buf 不包含 包的字节数
 		return false
 	}else{
 		//此时obj.storeBuf 开头必为0xff 0xff
-		headSize := uint16(obj.storeBuf[HeadSizeOffset])
-		packSizeOffset := HeadSizeOffset + headSize + 1
-		if curBufLen < packSizeOffset + 1 + PackageSizeBytes { //说明长度不包含包总字节数目
+		packageSize := binary.BigEndian.Uint16(obj.storeBuf[packageSizeOffset:])
+		if packageSize > curBufLen { //当前长度小于包长度
 			return false
-		}else {
-			//得到 包总长度
-			totalPackageSize := binary.BigEndian.Uint16(obj.storeBuf[packSizeOffset:2])
-			if curBufLen < totalPackageSize {
-				//说明当前长度小于 包总长度
-				return false
-			} else {
-				crc16 := binary.BigEndian.Uint16(obj.storeBuf[(totalPackageSize - 3) : (totalPackageSize - 1)])
-				crcCalculate := utils.Crc16(obj.storeBuf[:(totalPackageSize -3)])
-				if crc16 == crcCalculate {
-					//校验成功了
-					allbuffer = append(allbuffer, obj.storeBuf[:totalPackageSize -1])
-					//list.PushBack(obj.storeBuf[:totalPackageSize -1 ])
-				/*	if obj.CallBack != nil {
-						obj.CallBack(obj,obj.storeBuf[:totalPackageSize -1])
-					}else{
-						fmt.Println("未设置回调函数")
-						os.Exit(1)  //程序异常
-					}
-				 */
-				}else {
-					fmt.Println("校验失败")
-				}
-				if curBufLen > totalPackageSize {
-					obj.storeBuf = utils.DeleteElementsFromSlice(obj.storeBuf,0,int(totalPackageSize))
-					ret := obj.decodeFromBinaryStream(allbuffer) //递归一次继续找
-					if !ret { //结束条件 失败
-						return false
-					}
-				}
-				return true //都认为返回成功了
+		} else {
+			crc16 := binary.BigEndian.Uint16(obj.storeBuf[(packageSize - 2) : ])
+			crcCalculate := utils.Crc16(obj.storeBuf[:(packageSize - 2)])
+
+			if crc16 == crcCalculate {
+			//校验成功了
+			//	fmt.Println("curdatas",len(obj.storeBuf[:packageSize]),obj.storeBuf[:packageSize])
+				//list = append(list, obj.storeBuf[:packageSize])
+				list.PushBack(obj.storeBuf[:packageSize])
+			}else {
+				fmt.Println("校验失败")
 			}
+
+			if curBufLen > packageSize {
+				obj.storeBuf = utils.DeleteElementsFromSlice(obj.storeBuf,0,int(packageSize))
+				ret := obj.decodeFromBinaryStream(list) //递归一次继续找
+				if !ret { //结束条件 list
+					return false
+				}
+			}
+			return true //都认为返回成功了
 		}
+
 	}
 }
 

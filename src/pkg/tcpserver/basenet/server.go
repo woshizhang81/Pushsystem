@@ -64,7 +64,7 @@ func process(conn net.Conn, handle *NetServer) {
 			break
 		}
 		//data = append(data,buf...)  //... 切片打散
-		handle.receiveCallback(handle.callbackHandle,conn,buf[:n-1])
+		handle.receiveCallback(handle.callbackHandle,conn,buf[:n])
 		//		fmt.Printf("receive from client, data: %v\n", buf)
 	}
 }

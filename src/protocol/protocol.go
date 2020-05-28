@@ -3,11 +3,17 @@ package protocol
 import (
 	"Pushsystem/src/utils"
 	"encoding/binary"
+	//"fmt"
+	//"os"
+	//"fmt"
+	"os"
+	"fmt"
 )
 const BufDefaultSize = 2048
 
 type BodyData interface {
-	GetBuffer() ([]byte ,uint16)  //获得动态buffer 返回buffer长度
+	GetBuffer() []byte   //获得动态buffer 返回buffer长度
+	UnPacking( buf []byte) uint16  //解包
 }
 
 /*协议固定场景经过的 节点信息*/
@@ -23,33 +29,63 @@ type TransHead struct {
 	DeviceType  uint8  	 //为兼容多种终端唯一标识
 	ClientAddr 	[50]byte //客户终端端的ip 兼容ip6  v4(v6) [ip:port] 模式
 }
+
+func (transHead * TransHead) UnPackage(buf []byte) {
+	index := uint16(0)
+	transHead.ModID     	= binary.BigEndian.Uint16(buf[index:])//uint16   //支持最大65535 个应用
+	index = index + 2
+	copy(transHead.ModSerID[:] ,buf[index:])//[32]byte //网关服务器地址  md5 字符串 兼容ip6 v4(v6) md5([ip:port])
+	index = index + 32
+	transHead.ModSerIDC     = binary.BigEndian.Uint16(buf[index:])//uint16   //网关代表机房
+	index = index + 2
+	copy(transHead.GateWayID[:] ,buf[index:])//[32]byte //网关服务器地址  md5 字符串 兼容ip6 v4(v6) md5([ip:port])
+	index = index + 32
+	transHead.GateWayIDC	= binary.BigEndian.Uint16(buf[index:])//uint16   //网关代表机房
+	index = index + 2
+	copy(transHead.ManagerID[:] ,buf[index:])//[32]byte //网关服务器地址  md5 字符串 兼容ip6 v4(v6) md5([ip:port])
+	index = index + 32
+	transHead.ManagerIDC	= binary.BigEndian.Uint16(buf[index:])//uint16   //网关代表机房
+	index = index + 2
+	copy(transHead.DeviceID[:] ,buf[index:])//[32]byte //网关服务器地址  md5 字符串 兼容ip6 v4(v6) md5([ip:port])
+	index = index + 50
+	transHead.DeviceType  = buf[index]  //uint8  	 //为兼容多种终端唯一标识
+	index ++
+	copy(transHead.ClientAddr[:] ,buf[index:])//[32]byte //网关服务器地址  md5 字符串 兼容ip6 v4(v6) md5([ip:port])
+	index = index +50
+	if index != 205 {
+		os.Exit(1)
+		fmt.Println("head unpack error !!")
+	}
+}
 /*
 	头部打包
 */
-func (transHead * TransHead) Package(buf []byte) uint8{
-	len := uint8(0)
-	binary.BigEndian.PutUint16(buf[len:2] , transHead.ModID)
-	len = len + 2
-	copy(buf[len:32] ,transHead.ModSerID[:])
-	len = len + 32
-	binary.BigEndian.PutUint16(buf[len:2],transHead.ModSerIDC)
-	len = len + 2
-	copy(buf[len:32] ,transHead.GateWayID[:])
-	len = len + 32
-	binary.BigEndian.PutUint16(buf[len:2],transHead.GateWayIDC)
-	len = len + 2
-	copy(buf[len:32] ,transHead.ManagerID[:])
-	len = len + 32
-	binary.BigEndian.PutUint16(buf[len:2],transHead.ManagerIDC)
-	len = len + 2
-	copy(buf[len:50] ,transHead.DeviceID[:])
-	len = len + 50
-	buf[len] = transHead.DeviceType
-	len ++
-	copy(buf[len:50] , transHead.ClientAddr[:])
-	len = len +50
+func (transHead * TransHead) Package() []byte{
+	var buf [205]byte  //固定长度205 头部
 
-	return len
+	tlen := uint8(0)
+	binary.BigEndian.PutUint16(buf[tlen:] , transHead.ModID)
+	tlen = tlen + 2
+	copy(buf[tlen:] ,transHead.ModSerID[:])
+	tlen = tlen + 32
+	binary.BigEndian.PutUint16(buf[tlen:],transHead.ModSerIDC)
+	tlen = tlen + 2
+
+	copy(buf[tlen:] ,transHead.GateWayID[:])
+	tlen = tlen + 32
+	binary.BigEndian.PutUint16(buf[tlen:],transHead.GateWayIDC)
+	tlen = tlen + 2
+	copy(buf[tlen:] ,transHead.ManagerID[:])
+	tlen = tlen + 32
+	binary.BigEndian.PutUint16(buf[tlen:],transHead.ManagerIDC)
+	tlen = tlen + 2
+	copy(buf[tlen:] ,transHead.DeviceID[:])
+	tlen = tlen + 50
+	buf[tlen] = transHead.DeviceType
+	tlen ++
+	copy(buf[tlen:] , transHead.ClientAddr[:])
+	tlen = tlen +50
+	return buf[:]
 }
 
 type Protocol struct {   //传输信息 标准格式定义
@@ -76,38 +112,34 @@ func (proto *Protocol) Init(){
 /*
  打包函数
 */
-func (proto *Protocol) Package() ([]byte , uint16) {
-	buf := make([]byte , BufDefaultSize, BufDefaultSize) //创建2048 的切片
-	len := uint16(0)
-	copy(buf[len:2] , proto.PackHead[:])
-	len = len + 2
-	packSizeIndex := len
-	len = len + 2
+func (proto *Protocol) Package() []byte  {
+	buf := make([]byte , 0, BufDefaultSize) //创建2048 的切片
+	buf = append(buf, proto.PackHead[:]...)
+	buf = append(buf, 0,	0)
+	packSizeIndex := len(buf) -2
+	buf = append(buf, proto.Flag[:]...)
+	buf = append(buf,proto.PackType)
+	buf = append(buf,proto.PackID[:]...)
 
-	copy(buf[len:2] , proto.Flag[:])
-	len = len + 2
+	head := proto.Head.Package()
+	buf = append(buf,head[:]...)
 
-	buf[len] = proto.PackType
-	len ++
+	dataBuf := proto.Data.GetBuffer()
+	buf = append(buf,dataBuf[:]...)
 
-	copy(buf[len:32] , proto.PackID[:])
-	len = len + 32
+	proto.PackSize = uint16(len(buf) + 2)
+	binary.BigEndian.PutUint16(buf[packSizeIndex:] , proto.PackSize)
 
-	headlen := proto.Head.Package(buf[len:])
-	len = len + uint16(headlen)
-
-	dataBuf,dataLen := proto.Data.GetBuffer()
-	copy(buf[len:],dataBuf[:])
-	len = len + dataLen
-
-	proto.Crc = utils.Crc16(buf[:len])
-	binary.BigEndian.PutUint16(buf[len:2] , proto.Crc)
-	len = len  + 2
+	proto.Crc = utils.Crc16(buf[:])
+	buf = append(buf,0,0)
+	binary.BigEndian.PutUint16(buf[len(buf) - 2 :] , proto.Crc)
 	//填充PackSize
-	proto.PackSize = len
-	binary.BigEndian.PutUint16(buf[packSizeIndex:2] , proto.PackSize)
-	return buf,len
+
+	return buf
 }
+
+
+
 /*
 	是否为上行数据 ?
 */
@@ -136,7 +168,29 @@ func (transHead * Protocol) NeedAck() bool {
 	buf 是已经通过校验的
 */
 func (proto *Protocol) UnPacking(buf []byte) () {
+	length := uint16(len(buf))
+	index := uint16(0)
+	copy(proto.PackHead[:],buf[index:])
+	index = index + 2
+	proto.PackSize = binary.BigEndian.Uint16(buf[index:])
+	if length != proto.PackSize {
+		fmt.Println("unpacking failed")
+		os.Exit(1)
+	}
+	index = index + 2
+	copy(proto.Flag[:],buf[index:])
+	index = index + 2
+	proto.PackType = buf[index]
+	index ++
+	copy(proto.PackID[:],buf[index:])
+	index = index + 32
 
+	proto.Head.UnPackage(buf[index:])
+	index = index + 205
+
+	lengthdata := proto.Data.UnPacking(buf[index:])
+	index = index + lengthdata
+	proto.Crc = binary.BigEndian.Uint16(buf[index:])
 }
 
 

@@ -11,6 +11,8 @@ import (
 	"fmt"
 //	"github.com/letsfire/factory"
 //	"time"
+	"os"
+	"container/list"
 )
 const HbDur = 3 //s
 
@@ -96,7 +98,6 @@ func (handle *FrontModule) Start(config datadef.GateWayConfig){
 func (handle *FrontModule) Stop(){
 	handle.frontEnd.ShutDown()
 	handle.DestroyGoPool()
-//	handle.SlotPool.Shutdown()
 }
 
 func FrontOnAccept (handle interface{} ,conn net.Conn){
@@ -106,31 +107,32 @@ func FrontOnAccept (handle interface{} ,conn net.Conn){
 
 	session := SessionByIp{}
 	session.Init()
+	session.Conn = conn
 	module.SessionByIpManager.Add(ipAddr,session)
 }
 
 func FrontOnReceive (handle interface{} ,conn net.Conn ,data []byte){
 	module := handle.(*FrontModule)
 	ipAddr := conn.RemoteAddr().String()
-	fmt.Println("Client Recieve",ipAddr,"msg:",string(data[:len(data)]))
-	session := SessionByIp{}
-	session.Init()
-	session.Conn = conn
-	session.FrameCount ++
-	module.Channel.PutMessage(data[:len(data)])
-//	var frames [][]byte
-//	err := session.ProtoCheck.CheckAndGetProtocolBuffer(data,frames)
-/*	if err {
-		for _, v := range frames {
-			// 将解析出的帧 贴上客户端的ip和端口号
-			// 固定第四字节开始50 字节，不够补0
-		//	copy(v[3:50],[]byte(ipAddr))
-			//调用后端发送到manager里，按机房,qps量加权透传
-			//推到后端，由消费者消费 //逻辑就此完成
-		}
+	//fmt.Println("Client Recieve",ipAddr,"msg:",string(data[:]))
+	sessip,ok := module.SessionByIpManager.Get(ipAddr)
+	if !ok {
+		fmt.Println("fatel error should not be here\n")
+		os.Exit(1)
 	}
-	module.SessionByIpManager.Add(ipAddr,session)
-*/
+
+	unit := sessip.(SessionByIp)
+	unit.FrameCount ++
+	//module.Channel.PutMessage(data[:len(data)])
+
+	listFrame := list.New()
+	unit.ProtoCheck.CheckAndGetProtocolBuffer(data,listFrame)
+	fmt.Println("aaaaaaaaaaaaaaaa")
+
+	for item := listFrame.Front();nil != item ;item = item.Next() {
+		module.Channel.PutMessage(item.Value.([]byte))
+	//	fmt.Println(len(item.Value.([]byte)),item.Value.([]byte))
+	}
 }
 
 /*客户端检测断开*/
@@ -138,15 +140,15 @@ func FrontOnClose (handle interface{},conn net.Conn){
 	module := handle.(*FrontModule)
 	ipAddr := conn.RemoteAddr().String()
 	fmt.Println("client close",ipAddr)
-	v,err := module.SessionByIpManager.Get(ipAddr)
+	v,ok := module.SessionByIpManager.Get(ipAddr)
 	var deviceId string
 	var deviceType DeviceIdType
-	if err {
+	if ok {
 		deviceId   = v.(SessionByIp).DeviceId
 		deviceType = v.(SessionByIp).deviceType
 	}else {
-		module.SessionByIpManager.Delete(ipAddr)
-		return
+		fmt.Println("fatel error should not be here")
+		os.Exit(1)
 	}
 	//同时删除对应客户端Session信息
 	module.SessionByIpManager.Delete(ipAddr)
