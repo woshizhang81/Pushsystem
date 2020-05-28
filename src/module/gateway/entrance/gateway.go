@@ -10,15 +10,16 @@ import (
 	"os"
 	"Pushsystem/src/module/gateway/datadef"
 	"fmt"
+	//"time"
 )
 
 const ConfigName = "gateway.toml"
 
 type GateWay struct{
 	config   datadef.GateWayConfig
-	frontEnd frontend.FrontModule
-	backEnd  backend.BackModule
-	timer    timer2.CronTimer
+	frontEnd *frontend.FrontModule
+	backEnd  *backend.BackModule
+	timer    *timer2.CronTimer
 }
 
 func (handle *GateWay)loadConfig() bool {
@@ -40,15 +41,18 @@ func (handle *GateWay) Start()  {
 		os.Exit(1)	//退出程序
 	}
 	//开启前端
+	handle.frontEnd = frontend.GetInstance()
 	handle.frontEnd.Init()
 	fmt.Printf("%v" , handle.config)
 	handle.frontEnd.Start(handle.config)
 
 	//开启后端
+	handle.backEnd = backend.GetInstance()
 	handle.backEnd.Init()
 	handle.backEnd.Start(handle.config)
 	//开启定时器 30s心跳检测回调
-//	handle.timer.Add(HeartBeatTask ,handle, nil , 30)
+	handle.timer = &timer2.CronTimer{}
+	handle.timer.Add(HeartBeatTask ,handle, nil , frontend.HbDur)
 	/*  //待功能补全
 	//开启定时器 10s gateway 流量检测回调
 	handle.timer.Add(HeartBeatTask ,handle, nil , 10)
@@ -64,5 +68,11 @@ func (handle *GateWay) Stop()  {
 	handle.frontEnd.Stop()
 	handle.backEnd.Stop()
 	handle.timer.Stop()
+}
 
+//心跳检测
+func HeartBeatTask (handle interface{} , id int,param interface{}){
+	//fmt.Println(id,handle,time.Now().Unix())
+	gateway := handle.(*GateWay)
+	gateway.frontEnd.HBCheckNotify()
 }

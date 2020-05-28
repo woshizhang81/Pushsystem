@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"hash/crc32"
 	"os"
+	"math/rand"
+	"time"
+	"strconv"
 )
 
 /*
@@ -91,3 +94,13 @@ func FindSubByteArray(src []byte , needle []byte) int {
 	return -1
 }
 
+//生成6位随机数
+func CreateCaptcha() int {
+	str := fmt.Sprintf("%06v", rand.New(rand.NewSource(time.Now().UnixNano())).Int31n(1000000))
+	num,err := strconv.Atoi(str)
+	if err == nil {
+		return num
+	}else{
+		return -1
+	}
+}

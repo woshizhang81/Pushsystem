@@ -4,6 +4,9 @@ import (
 	"Pushsystem/src/utils"
 	"net"
 	"sync"
+	"time"
+	"math"
+	"fmt"
 )
 
 const slotNum = 500
@@ -21,8 +24,8 @@ type Session struct {
 	IdType		DeviceIdType //id 类型
 	Connection net.Conn		// 连接handle
 	State       bool		// 当前状态
-	RegisterTime int32      // 注册时间
-	HbTimeCount int32		// 心跳时间戳
+	RegisterTime int64      // 注册时间
+	HbTimeCount int64		// 心跳时间戳
 }
 
 /*
@@ -73,5 +76,25 @@ func (handle * SessionManager) Delete(uniqueId string) {
 	handle.syncMapArray[slot].Delete(uniqueId)
 }
 
+
+
+func (handle * SessionManager) HBCheckBySlot(slot int, dur int64) {
+	handle.syncMapArray[slot].Range(func (key,value interface{}) bool{
+		uniqueId := key.(string)
+		session  := key.(Session)
+		curCount := time.Now().Unix()
+		if session.HbTimeCount == 0 {
+			session.HbTimeCount = curCount
+		}else {
+			if math.Abs(float64(curCount - session.HbTimeCount)) > float64(dur) {
+				fmt.Println("client",uniqueId,"break by hbcheck")
+				ipKey := session.remoteAddr()
+				obj := GetFrontSessionByIpInstance() //同时
+				obj.Delete(ipKey)
+			}
+		}
+		return true
+	})
+}
 
 

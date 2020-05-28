@@ -9,7 +9,7 @@ import (
 
 type  SessionByIp struct {
 	DeviceId 		string 			//注册帧 解析时填充
-	DeviceIdType 	DeviceIdType
+	deviceType 	DeviceIdType
 	//Idc			 	uint16
 	Qps				int		  //qps
 	LastFrameCount	uint32    //上次汇聚周期的帧数

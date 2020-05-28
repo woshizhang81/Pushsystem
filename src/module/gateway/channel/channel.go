@@ -17,10 +17,10 @@ const UpStreamGoRoutineMaxNum 	= 20000  //最大20000个go程池
 const UpStreamGoRoutineInitNum 	= 50	   //初始化50个go程大小
 const MessageQueueCapity 		= 100000	   //十万个大小队列
 
-
 /*
 	上行数据通道
 */
+
 type UpStreamChannel struct {
 	MsgQueue  	chan []byte	//  消息帧
 	GoPool  	*factory.Master //
@@ -39,6 +39,8 @@ type MsgUpStream struct {
 func TaskLineExcute(args interface{}) {
 	body := args.(MsgUpStream)
 	fmt.Println("将要被发送到后端的数据包",body.args.([]byte))
+	backEnd := body.Consumer.(*backend.BackModule)
+	fmt.Printf("%v", *backEnd)
 	// 1. 按轮训方式或者配置的
 	// 2. manager权重 发送
 }
@@ -55,6 +57,7 @@ func (obj * UpStreamChannel) Start()  {
 }
 
 func (obj * UpStreamChannel) PutMessage(msg []byte)  {
+
 	par := MsgUpStream{Consumer:obj.Consumer , args:msg}
 	obj.TaskLine.Submit(par)
 }

@@ -69,6 +69,19 @@ func process(conn net.Conn, handle *NetServer) {
 	}
 }
 
+func acceptDealMent(server *NetServer){
+	for {
+		conn, err := server.listener.Accept()
+		if err != nil { //此处要判断的还有信号打断的情况
+			fmt.Printf("accept fail, err: %v\n", err)
+			break
+		}
+		//create goroutine for each connect
+		go process(conn, server)
+		server.acceptCallback(server.callbackHandle,conn)
+	}
+}
+
 func (server *NetServer ) Create (ipAddr string, port uint16) bool {
 	address := ipAddr + ":" + strconv.Itoa(int(port))
 	fmt.Println(address)
@@ -80,16 +93,7 @@ func (server *NetServer ) Create (ipAddr string, port uint16) bool {
 	}
 	//2.accept client request
 	//3.create goroutine for each request
-	for {
-		conn, err := server.listener.Accept()
-		if err != nil { //此处要判断的还有信号打断的情况
-			fmt.Printf("accept fail, err: %v\n", err)
-			break
-		}
-		//create goroutine for each connect
-		go process(conn, server)
-		server.acceptCallback(server.callbackHandle,conn)
-	}
+	go acceptDealMent(server)
 	return true
 }
 

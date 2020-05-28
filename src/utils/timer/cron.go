@@ -5,14 +5,16 @@ import (
 	"sync"
 	"sync/atomic"
 	"time"
+	"Pushsystem/src/utils"
 )
 
-type Task func (handle interface{} , dur int32,param interface{})
+type Task func (handle interface{} , id int,param interface{})
 
 type TimeUnit struct{
 	handle     interface{}
 	param      interface{}
 	task       Task
+	id		   int  //该定时器id
 	dur        int32  //定时间隔
 	startCount int64 //当前定时计数
 }
@@ -35,18 +37,23 @@ func (cron *CronTimer) Start () {
 
 //添加定时任务,
 //params task 回调函数， handle回调函数传入句柄，params 回调函数传入参数 dur定时间隔
-func (cron *CronTimer) Add (task Task,handle interface{},params interface{},dur int32) {
+func (cron *CronTimer) Add (task Task,handle interface{},params interface{},dur int32) int{
 	newTask := TimeUnit{}
 	newTask.task = task
 	newTask.handle = handle
 	newTask.startCount = time.Now().Unix()
 	newTask.dur = dur
 	newTask.param = params
-	cron.taskMap.Store(dur,newTask)
+	newid := utils.CreateCaptcha()
+	if newid != -1 {
+		newTask.id = newid
+		cron.taskMap.Store(newTask.id,newTask)
+	}
+	return newTask.id
 }
 
 //
-func (cron *CronTimer) Delete(key int32) {
+func (cron *CronTimer) Delete(key int64) {
 	cron.taskMap.Delete(key)
 }
 
@@ -63,7 +70,7 @@ func execute(Timer * CronTimer , c <-chan int){ //c 用作接收
 			if sign == 1 {
 				count ++
 			    Timer.taskMap.Range(func(key, value interface{}) bool {
-			    	realKey := key.(int32)
+			    	realKey := key.(int)
 			    	realValue := value.(TimeUnit)
 			    	//startTime := realValue.startCount - startTimeCount
 					mod := count % int64(realValue.dur)
