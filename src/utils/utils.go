@@ -63,7 +63,9 @@ func DeleteElementsFromSlice(src []byte ,start int ,size int) []byte {
 		fmt.Println("切片删除错误")
 		os.Exit(1)
 	}else{
+	//	fmt.Println(start,size,"之间被丢掉的帧",src[start:start+size])
 		src = append(src[:start], src[(start + size):]...)
+	//	fmt.Println(start,size,"之间被丢掉之后的帧",src[:])
 		return src
 	}
 	return src
@@ -79,7 +81,8 @@ func FindSubByteArray(src []byte , needle []byte) int {
 	needleLength := len(needle)
 	flag := true
 	for i = 0 ; i < srcLength ; i++  {
-		if (i + needleLength) >= srcLength {
+		flag = true
+		if (i + needleLength) > srcLength {
 			return -1
 		}
 		for j = 0; j < needleLength ;j++  {

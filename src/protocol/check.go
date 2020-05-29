@@ -3,8 +3,10 @@ package protocol
 import (
 	"Pushsystem/src/utils"
 	"encoding/binary"
-	"fmt"
+	//"fmt"
 	"container/list"
+	//"os"
+	//"os"
 )
 
 /*
@@ -26,36 +28,41 @@ type ProtoCheck struct{
 func (obj *ProtoCheck)Init()  {
 	obj.storeBuf = make([]byte , 0 , DefaultCapLength)
 }
-/*
-	list 保存了解出来的帧
-*/
-//func (obj *ProtoCheck)CheckAndGetProtocolBuffer(bufRcv []byte,allbuffer [][]byte) bool  {
-	func (obj *ProtoCheck)CheckAndGetProtocolBuffer(bufRcv []byte,list *list.List ) bool  {
-	//找到 头为0xff 0xff 的起始地址
-	obj.storeBuf = append(obj.storeBuf, bufRcv[:]...)
+
+/*标准化处理 0xff 0xff 开头*/
+func (obj *ProtoCheck)StandardDealMent()  bool {
 	fixHead := [2]byte{0xff,0xff}
 	index := utils.FindSubByteArray(obj.storeBuf, fixHead[:])
 	if index == -1 { //说明没找到头 ，该帧需要丢掉，一般不可能出现这种情况
 		if obj.storeBuf[len(obj.storeBuf) -1] == 0xff {
+			//fmt.Println("无0xff丢掉的帧",obj.storeBuf[:len(obj.storeBuf) -1])
 			obj.storeBuf = append(obj.storeBuf[0:0], 0xff)
 			return false
 		}else {
-			//fmt.Println(obj.storeBuf)
+			//fmt.Println("无0xff丢掉的帧",obj.storeBuf)
 			obj.storeBuf = obj.storeBuf[0:0] //清空该buf
 			return false
 		}
 	} else {
 		if index != 0 {
 			//丢掉index之前的所有帧
+			//fmt.Println("index之前的所有帧",obj.storeBuf[:index])
 			retBuf := utils.DeleteElementsFromSlice(obj.storeBuf,0,index)
 			obj.storeBuf = retBuf
-		}else {
-			//一般情况在这里
-			//开始按规则截取包
-			obj.decodeFromBinaryStream(list)
 		}
 	}
-
+	return true
+}
+/*
+	list 保存了解出来的帧
+*/
+func (obj *ProtoCheck)CheckAndGetProtocolBuffer(bufRcv []byte,list *list.List ) bool  {
+	//fmt.Println("before connect", obj.storeBuf)
+	obj.storeBuf = append(obj.storeBuf, bufRcv[:]...)
+	ret := obj.StandardDealMent()
+	if ret {
+		obj.decodeFromBinaryStream(list)
+	}
 	return true
 }
 
@@ -66,9 +73,9 @@ func (obj *ProtoCheck)Init()  {
 const packageSizeOffset = 2
 
 //func (obj *ProtoCheck) decodeFromBinaryStream(allbuffer [][]byte)  bool {
-	func (obj *ProtoCheck) decodeFromBinaryStream(list *list.List)  bool {
+func (obj *ProtoCheck) decodeFromBinaryStream(list *list.List)  bool {
 	curBufLen := uint16(len(obj.storeBuf))
-	if curBufLen < 2 { //说明当前buf 不包含 包的字节数
+	if curBufLen < 4 { //说明当前buf 不包含 包的字节数
 		return false
 	}else{
 		//此时obj.storeBuf 开头必为0xff 0xff
@@ -80,19 +87,23 @@ const packageSizeOffset = 2
 			crcCalculate := utils.Crc16(obj.storeBuf[:(packageSize - 2)])
 
 			if crc16 == crcCalculate {
-			//校验成功了
-			//	fmt.Println("curdatas",len(obj.storeBuf[:packageSize]),obj.storeBuf[:packageSize])
-				//list = append(list, obj.storeBuf[:packageSize])
-				list.PushBack(obj.storeBuf[:packageSize])
+				//fmt.Println("校验成功的帧",len(obj.storeBuf[:packageSize]),obj.storeBuf[:packageSize])
+				//异步操作，无法保证 同一会影响切片的 数据
+				// 复制一个切片 //复制会导致效率低，暂时保留找别的解决方法？？
+				var frame []byte
+				frame = append(frame[0:0],obj.storeBuf[:packageSize]...)
+				list.PushBack(frame[:])
 			}else {
-				fmt.Println("校验失败")
+				//fmt.Println("校验失败的帧",packageSize ,obj.storeBuf[:packageSize])
 			}
-
+			//丢掉一帧 storeBuf 里的数据
+			//obj.storeBuf = append(obj.storeBuf[0:0], obj.storeBuf[packageSize:]...)
+			obj.storeBuf = utils.DeleteElementsFromSlice(obj.storeBuf,0,int(packageSize))
+		//	fmt.Println("cur buf frame",len(obj.storeBuf),obj.storeBuf)
 			if curBufLen > packageSize {
-				obj.storeBuf = utils.DeleteElementsFromSlice(obj.storeBuf,0,int(packageSize))
-				ret := obj.decodeFromBinaryStream(list) //递归一次继续找
-				if !ret { //结束条件 list
-					return false
+				ret := obj.StandardDealMent()
+				if ret {
+					obj.decodeFromBinaryStream(list) //递归一次继续找
 				}
 			}
 			return true //都认为返回成功了

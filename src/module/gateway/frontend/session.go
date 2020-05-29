@@ -7,9 +7,9 @@ import (
 	"time"
 	"math"
 	"fmt"
+	"Pushsystem/src/const"
 )
 
-const slotNum = 500
 
 type DeviceIdType int32
 
@@ -54,25 +54,25 @@ func GetFrontSessionInstance() *SessionManager {
 }
 
 type SessionManager struct{
-	syncMapArray [slotNum]sync.Map
+	syncMapArray [_const.SlotNum]sync.Map
 	//500个slot 每一个绑定一个sync map 方便心跳 多go程遍历 提高效率
 }
 
 func (handle * SessionManager) Add (uniqueId string,session Session) {
 	hashcode := utils.HasCode(uniqueId)
-	slot := hashcode % slotNum
+	slot := hashcode % _const.SlotNum
 	handle.syncMapArray[slot].Store(uniqueId,session)
 }
 
 func (handle * SessionManager) Get (uniqueId string ,session * Session) (interface{} ,bool) {
 	hashcode := utils.HasCode(uniqueId)
-	slot := hashcode % slotNum
+	slot := hashcode % _const.SlotNum
 	return handle.syncMapArray[slot].Load(uniqueId)
 }
 
 func (handle * SessionManager) Delete(uniqueId string) {
 	hashcode := utils.HasCode(uniqueId)
-	slot := hashcode % slotNum
+	slot := hashcode % _const.SlotNum
 	handle.syncMapArray[slot].Delete(uniqueId)
 }
 

@@ -19,7 +19,6 @@ func init(){
 
 var thApp module.Module
 func main(){
-
 	appConfig := config2.GetInstance().LoadConfig()
 	if nil ==  appConfig {
 		os.Exit(1)

@@ -5,6 +5,7 @@ import (
 	"Pushsystem/src/utils"
 	"net"
 	"sync"
+	"Pushsystem/src/const"
 )
 
 type  SessionByIp struct {
@@ -14,12 +15,12 @@ type  SessionByIp struct {
 	Qps				int		  //qps
 	LastFrameCount	uint32    //上次汇聚周期的帧数
 	FrameCount		uint32    //IP端口 接收的次数 用于实时计算qps,自增
-	ProtoCheck 		protocol.ProtoCheck //协议检测
+	ProtoCheck 		*protocol.ProtoCheck //协议检测
 	Conn 			net.Conn
 }
 
 func (obj *SessionByIp)Init(){
-	obj.ProtoCheck = protocol.ProtoCheck{}
+	obj.ProtoCheck = &protocol.ProtoCheck{}
 	obj.ProtoCheck.Init()
 }
 
@@ -37,7 +38,7 @@ func GetFrontSessionByIpInstance() *SessionManagerByIp {
 }
 
 type SessionManagerByIp struct{
-	syncMapArray [slotNum]sync.Map
+	syncMapArray [_const.SlotNum]sync.Map
 	//500个slot 每一个绑定一个sync map 方便心跳 多go程遍历 提高效率
 }
 
@@ -46,18 +47,18 @@ type SessionManagerByIp struct{
 */
 func (handle * SessionManagerByIp) Add (addr string,session SessionByIp) {
 	hashcode := utils.HasCode(addr)
-	slot := hashcode % slotNum
+	slot := hashcode % _const.SlotNum
 	handle.syncMapArray[slot].Store(addr,session)
 }
 
 func (handle * SessionManagerByIp) Get (addr string ) (interface{} ,bool) {
 	hashcode := utils.HasCode(addr)
-	slot := hashcode % slotNum
+	slot := hashcode % _const.SlotNum
 	return handle.syncMapArray[slot].Load(addr)
 }
 
 func (handle * SessionManagerByIp) Delete(addr string) {
 	hashcode := utils.HasCode(addr)
-	slot := hashcode % slotNum
+	slot := hashcode % _const.SlotNum
 	handle.syncMapArray[slot].Delete(addr)
 }

@@ -13,11 +13,12 @@ import (
 //	"time"
 	"os"
 	"container/list"
+	"Pushsystem/src/const"
 )
 const HbDur = 3 //s
 
 type FrontModule struct {
-	ChanArray [slotNum]chan uint8
+	ChanArray [_const.SlotNum]chan uint8
 	frontEnd tcpserver.TcpServer
 	SessionManager * SessionManager
 	SessionByIpManager * SessionManagerByIp
@@ -52,7 +53,7 @@ func process(handle interface{},id int ,c  <-chan uint8){
 }
 
 func (handle *FrontModule) CreateGoPool(){
-	for i:=0 ;i< slotNum ; i++ {
+	for i:=0 ;i< _const.SlotNum ; i++ {
 		c := make(chan uint8)
 		handle.ChanArray[i] =  c  //保存生成的chan
 		go  process(handle ,i  , c )
@@ -60,16 +61,15 @@ func (handle *FrontModule) CreateGoPool(){
 }
 
 func (handle *FrontModule) HBCheckNotify(){
-	for i:=0 ;i< slotNum ; i++ {
+	for i:=0 ;i< _const.SlotNum ; i++ {
 		handle.ChanArray[i] <- 1  //循环通知所有的go程 开始执行心跳检测
 	}
 }
 
 func (handle *FrontModule) DestroyGoPool(){
-	for i:=0 ;i< slotNum ; i++ {
+	for i:=0 ;i < _const.SlotNum ; i++ {
 		close(handle.ChanArray[i])
 	}
-
 }
 
 /* 初始化 */
@@ -82,7 +82,7 @@ func (handle *FrontModule) Init(){
 
 	handle.CreateGoPool()
 
-	//handle.SlotPool = factory.NewMaster(slotNum,slotNum) //同slot数目相同
+	//handle.SlotPool = factory.NewMaster(_const.SlotNum,_const.SlotNum) //同slot数目相同
 	handle.frontEnd.SetCallBackHandle(handle)
 	handle.frontEnd.SetAcceptCallback(FrontOnAccept)
 	handle.frontEnd.SetReceiveCallback(FrontOnReceive)
@@ -127,11 +127,8 @@ func FrontOnReceive (handle interface{} ,conn net.Conn ,data []byte){
 
 	listFrame := list.New()
 	unit.ProtoCheck.CheckAndGetProtocolBuffer(data,listFrame)
-	fmt.Println("aaaaaaaaaaaaaaaa")
-
 	for item := listFrame.Front();nil != item ;item = item.Next() {
 		module.Channel.PutMessage(item.Value.([]byte))
-	//	fmt.Println(len(item.Value.([]byte)),item.Value.([]byte))
 	}
 }
 
@@ -141,8 +138,8 @@ func FrontOnClose (handle interface{},conn net.Conn){
 	ipAddr := conn.RemoteAddr().String()
 	fmt.Println("client close",ipAddr)
 	v,ok := module.SessionByIpManager.Get(ipAddr)
-	var deviceId string
-	var deviceType DeviceIdType
+	var deviceId 	string
+	var deviceType 	DeviceIdType
 	if ok {
 		deviceId   = v.(SessionByIp).DeviceId
 		deviceType = v.(SessionByIp).deviceType
