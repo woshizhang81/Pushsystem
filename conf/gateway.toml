@@ -5,7 +5,7 @@ qpslimit = 102
 #最大客户端连接数字
 maxconn = 100000
 #slot 槽位数字
-slotnum = 200
+GateWaySlotNum = 200
 #黑名单长度
 blacklistnum = 10000
 #IP地址
@@ -20,7 +20,7 @@ qpslimit = 102
 #最大客户端连接数字
 maxconn = 100000
 #slot 槽位数字
-slotnum = 200
+GateWaySlotNum = 200
 #黑名单长度
 blacklistnum = 10000
 #IP地址

@@ -2,11 +2,11 @@ package main
 
 import (
 	timer2 "Pushsystem/src/utils/timer"
-	"os/signal"
-	"syscall"
+	"fmt"
 	"log"
 	"os"
-	"fmt"
+	"os/signal"
+	"syscall"
 	"time"
 )
 
@@ -14,7 +14,7 @@ func HeartBeatTask (handle interface{} , id int,param interface{}){
 	fmt.Println(id,handle,time.Now().Unix())
 }
 
-func main(){
+func main() {
 	timer := &timer2.CronTimer{}
 	timer.Add(HeartBeatTask ,20000, nil , 2)
 	timer.Add(HeartBeatTask ,3000000, nil , 10)

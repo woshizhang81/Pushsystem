@@ -1,6 +1,7 @@
 package entrance
 
 import (
+	_const "Pushsystem/src/const"
 	"Pushsystem/src/module/gateway/backend"
 	"Pushsystem/src/module/gateway/frontend"
 	"Pushsystem/src/utils"
@@ -52,16 +53,15 @@ func (handle *GateWay) Start()  {
 	handle.backEnd.Start(handle.config)
 	//开启定时器 30s心跳检测回调
 	handle.timer = &timer2.CronTimer{}
-	handle.timer.Add(HeartBeatTask ,handle, nil , frontend.HbDur)
-	/*  //待功能补全
-	//开启定时器 10s gateway 流量检测回调
-	handle.timer.Add(HeartBeatTask ,handle, nil , 10)
-	//开启定时器 5s 机器检查回调
-	handle.timer.Add(HeartBeatTask ,handle, nil , 10)
-	*/
+	handle.timer.Add(GateWayFrontEndHeartBeatTask ,handle, nil , _const.GateWayFrontHbDur)
+	handle.timer.Add(HostStateCheck ,handle, nil , _const.GateWayHostStateCheckDur)
+	  //待功能补全
+	//开启定时器 10s gateway 后端心跳检测回调
+	handle.timer.Add(GateWayBackEndHeartBeatTask,handle, nil , _const.GateWayBackHbDur)
+	handle.timer.Add(GateWayBackEndLoadBalanceCheck,handle, nil , _const.GateWayBackLoadBalanceDur)
+	//前端 流量检测定时回调
+	handle.timer.Add(GateWayFrontEndFlowRateCheck,handle, nil , _const.GateWayFrontFlowRateDur)
 	handle.timer.Start()
-	//等待添加任務
-
 }
 
 func (handle *GateWay) Stop()  {
@@ -70,9 +70,33 @@ func (handle *GateWay) Stop()  {
 	handle.timer.Stop()
 }
 
-//心跳检测
-func HeartBeatTask (handle interface{} , id int,param interface{}){
+//前端 心跳检测
+func GateWayFrontEndHeartBeatTask (handle interface{} , id int,param interface{}){
 	//fmt.Println(id,handle,time.Now().Unix())
 	gateway := handle.(*GateWay)
 	gateway.frontEnd.HBCheckNotify()
 }
+
+// 10s 检查一次主机状态
+func HostStateCheck (handle interface{} , id int,param interface{}) {
+
+}
+
+// 后端心跳检测逻辑
+func GateWayBackEndHeartBeatTask(handle interface{} , id int,param interface{}){
+
+}
+
+//前端流量控制逻辑
+func GateWayFrontEndFlowRateCheck(handle interface{} , id int,param interface{}){
+
+}
+
+//后端负载均衡定时回调
+func GateWayBackEndLoadBalanceCheck(handle interface{} , id int,param interface{}){
+
+}
+
+
+
+

@@ -3,12 +3,12 @@ package main
 import (
 	config2 "Pushsystem/src/config"
 	"Pushsystem/src/module"
-	"os"
+	"Pushsystem/src/module/gateway/entrance"
 	"fmt"
+	"log"
+	"os"
 	"os/signal"
 	"syscall"
-	"log"
-	"Pushsystem/src/module/gateway/entrance"
 )
 
 func init(){
@@ -18,7 +18,8 @@ func init(){
 }
 
 var thApp module.Module
-func main(){
+
+func main() {
 	appConfig := config2.GetInstance().LoadConfig()
 	if nil ==  appConfig {
 		os.Exit(1)
@@ -38,7 +39,6 @@ func main(){
 	log.Println(<-ch)
 	// Stop the service gracefully.
 	thApp.Stop()
-
 }
 
 

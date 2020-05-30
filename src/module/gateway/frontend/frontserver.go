@@ -1,24 +1,23 @@
 package frontend
 
 import (
+	"Pushsystem/src/const"
+	"Pushsystem/src/module/gateway/channel"
+	"Pushsystem/src/module/gateway/datadef"
 	"Pushsystem/src/pkg/tcpserver"
 	"Pushsystem/src/pkg/tcpserver/basenet"
-	"sync"
-	"Pushsystem/src/module/gateway/datadef"
-	"Pushsystem/src/module/gateway/channel"
-	"net"
 	"Pushsystem/src/utils"
-	"fmt"
-//	"github.com/letsfire/factory"
-//	"time"
-	"os"
 	"container/list"
-	"Pushsystem/src/const"
+	"fmt"
+	"net"
+	"sync"
+	//	"github.com/letsfire/factory"
+	//	"time"
+	"os"
 )
-const HbDur = 3 //s
 
 type FrontModule struct {
-	ChanArray [_const.SlotNum]chan uint8
+	ChanArray [_const.GateWaySlotNum]chan uint8
 	frontEnd tcpserver.TcpServer
 	SessionManager * SessionManager
 	SessionByIpManager * SessionManagerByIp
@@ -43,7 +42,7 @@ func process(handle interface{},id int ,c  <-chan uint8){
 		case _, ok := <-c :
 			if ok {
 				//fmt.Println("hbcheck",id,time.Now().Unix())
-				obj.SessionManager.HBCheckBySlot(id,HbDur)
+				obj.SessionManager.HBCheckBySlot(id,_const.GateWayFrontHbDur)
 			} else {
 				//收到关闭信号 退出 go程
 				break
@@ -53,7 +52,7 @@ func process(handle interface{},id int ,c  <-chan uint8){
 }
 
 func (handle *FrontModule) CreateGoPool(){
-	for i:=0 ;i< _const.SlotNum ; i++ {
+	for i:=0 ;i< _const.GateWaySlotNum ; i++ {
 		c := make(chan uint8)
 		handle.ChanArray[i] =  c  //保存生成的chan
 		go  process(handle ,i  , c )
@@ -61,13 +60,13 @@ func (handle *FrontModule) CreateGoPool(){
 }
 
 func (handle *FrontModule) HBCheckNotify(){
-	for i:=0 ;i< _const.SlotNum ; i++ {
+	for i:=0 ;i< _const.GateWaySlotNum ; i++ {
 		handle.ChanArray[i] <- 1  //循环通知所有的go程 开始执行心跳检测
 	}
 }
 
 func (handle *FrontModule) DestroyGoPool(){
-	for i:=0 ;i < _const.SlotNum ; i++ {
+	for i:=0 ;i < _const.GateWaySlotNum ; i++ {
 		close(handle.ChanArray[i])
 	}
 }
@@ -82,7 +81,7 @@ func (handle *FrontModule) Init(){
 
 	handle.CreateGoPool()
 
-	//handle.SlotPool = factory.NewMaster(_const.SlotNum,_const.SlotNum) //同slot数目相同
+	//handle.SlotPool = factory.NewMaster(_const.GateWaySlotNum,_const.GateWaySlotNum) //同slot数目相同
 	handle.frontEnd.SetCallBackHandle(handle)
 	handle.frontEnd.SetAcceptCallback(FrontOnAccept)
 	handle.frontEnd.SetReceiveCallback(FrontOnReceive)

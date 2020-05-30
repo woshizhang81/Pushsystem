@@ -38,7 +38,7 @@ func GetFrontSessionByIpInstance() *SessionManagerByIp {
 }
 
 type SessionManagerByIp struct{
-	syncMapArray [_const.SlotNum]sync.Map
+	syncMapArray [_const.GateWaySlotNum]sync.Map
 	//500个slot 每一个绑定一个sync map 方便心跳 多go程遍历 提高效率
 }
 
@@ -47,18 +47,18 @@ type SessionManagerByIp struct{
 */
 func (handle * SessionManagerByIp) Add (addr string,session SessionByIp) {
 	hashcode := utils.HasCode(addr)
-	slot := hashcode % _const.SlotNum
+	slot := hashcode % _const.GateWaySlotNum
 	handle.syncMapArray[slot].Store(addr,session)
 }
 
 func (handle * SessionManagerByIp) Get (addr string ) (interface{} ,bool) {
 	hashcode := utils.HasCode(addr)
-	slot := hashcode % _const.SlotNum
+	slot := hashcode % _const.GateWaySlotNum
 	return handle.syncMapArray[slot].Load(addr)
 }
 
 func (handle * SessionManagerByIp) Delete(addr string) {
 	hashcode := utils.HasCode(addr)
-	slot := hashcode % _const.SlotNum
+	slot := hashcode % _const.GateWaySlotNum
 	handle.syncMapArray[slot].Delete(addr)
 }
