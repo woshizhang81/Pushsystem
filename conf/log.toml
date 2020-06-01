@@ -1,0 +1,18 @@
+[[writer]]
+name: "demo1", #需要控制的Writer名字
+# 以下可配置项 与全局配置项相同
+rotateunit = "h"
+rotatecount = 12
+path = "./log/demo_log_dir"
+level = "info"
+format = "%L: %D %t %S %M"
+
+[[writer]]
+name: "test1", #需要控制的Writer名字
+# 以下可配置项 与全局配置项相同
+rotateunit = "h"
+rotatecount = 24
+path = "./log/test_log_dir"
+level = "info"
+format = "%L: %D %t %S %M"
+stdout = true

@@ -94,6 +94,7 @@ type Protocol struct {   //传输信息 标准格式定义
 	Flag        [2]byte  //标志位 0x0001 上下行数据 1 为上行 0 为下行
 						 //0x0002 是否需要应答 1.需要应答 0.不需要
 						 //0x0004 是否需要geteway拆包 //用于注册帧和心跳帧 gateway状态同步的  0x0005 生效
+						 //0x0008 
 	PackType  	uint8    //预留255种类型  注册帧，心跳帧，转发,推送  //相对manager服务而言
 	PackID		[32]byte // 该包的唯一标识。作推送确认使用
 	Head		TransHead //
