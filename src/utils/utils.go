@@ -107,3 +107,15 @@ func CreateCaptcha() int {
 		return -1
 	}
 }
+
+/*删除切片中固定的元素*/
+func DeleteValueFormSlice(slice []string, key string ) bool {
+	length := len(slice)
+	for i := 0; i < length ; i++ {
+		if slice[i] == key {
+			slice = append(slice[:i], slice[i+1:]...)
+			return true
+		}
+	}
+	return false
+}

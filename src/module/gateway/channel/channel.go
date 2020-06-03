@@ -39,7 +39,7 @@ type MsgUpStream struct {
 func TaskLineExcute(args interface{}) {
 	body := args.(MsgUpStream)
 	fmt.Println("将要被发送到后端的数据包",len(body.args.([]byte)),body.args.([]byte))
-	//backEnd := body.Consumer.(*backend.BackModule)
+	backEnd := body.Consumer.(*backend.BackModule)
 	//fmt.Printf("%v", *backEnd)
 	// 1. 按轮训方式或者配置的
 	// 2. manager权重 发送

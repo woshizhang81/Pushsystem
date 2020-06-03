@@ -4,7 +4,6 @@ import (
 	"Pushsystem/src/protocol"
 	"net"
 	"Pushsystem/src/utils"
-	"Pushsystem/src/const"
 	"sync"
 	"time"
 	"math"
@@ -43,14 +42,16 @@ func GetFrontSessionInstance() *SessionManager {
 }
 
 type SessionManager struct{
-	Map sync.Map
+	//Map sync.Map
+	Map SafeMap
+
 }
-func (handle * SessionManager) Add (uniqueId string,session Session) {
-	handle.Map.Store(uniqueId,session)
+func (handle * SessionManager) Add (uniqueId string,session *Session) {
+	handle.Map.Set(uniqueId,session)
 }
 
-func (handle * SessionManager) Get (uniqueId string ,session * Session) (interface{} ,bool) {
-	return handle.Map.Load(uniqueId)
+func (handle * SessionManager) Get (uniqueId string ) interface{}  {
+	return handle.Map.Get(uniqueId)
 }
 
 func (handle * SessionManager) Delete(uniqueId string) {

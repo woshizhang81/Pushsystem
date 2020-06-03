@@ -85,17 +85,21 @@ func (handle *BackModule) DestroyGoPool(){
 }
 
 /* 初始化 */
-
-
 func (handle *BackModule) Start(config datadef.GateWayConfig){
 	handle.frontEnd.Create(config.Frontend.Ip , config.Frontend.Port)
 }
 
-/*
-*/
 func (handle *BackModule) Stop(){
 	handle.backEnd.ShutDown()
 	handle.DestroyGoPool()
+}
+
+/*
+	向manager发送数据 发送规则 轮训发送
+*/
+func (handle *BackModule) SendToManager(buf []byte){
+	session := handle.SessionManager.Map.GetAverage().(*Session)
+	handle.backEnd.Send(session.Connection,buf)
 }
 
 func BackOnAccept (handle interface{} ,conn net.Conn){
@@ -148,7 +152,5 @@ func BackOnClose (handle interface{},conn net.Conn){
 	uniqueId := utils.UniqueId(int32(managerIDC),string(managerId[:]))
 	module.SessionManager.Delete(uniqueId)
 }
-
-
 
 
