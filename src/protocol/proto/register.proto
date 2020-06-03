@@ -1,0 +1,178 @@
+syntax = "proto3";
+
+package protos;
+
+option java_multiple_files = true;
+option java_package = "com.baidu.mapautosdk.util.grpc.protobuf.gopush";
+option java_outer_classname = "GoPushProto";
+option objc_class_prefix = "RTG";
+
+enum MsgType {
+  // Place Holder Code
+  PlaceHolderMsg = 0x0000;
+  // control messages 0x0001 ~ 0x0100
+  SessionMadeMsg = 0x0001;
+  ConnectionLostMsg = 0x0002;
+  HeartbeatMsg = 0x0003;
+  TransportMsgCode = 0x0004;
+
+  // common messages 0x0101 ~ 0x0200
+  RegisterMsg = 0x0101;
+  RegisterRespMsg = 0x0102;
+  SetPoiMsg = 0x0103;
+
+  // Parking push message 0x0201 ~ 0x0300
+  ParkingEnterMsg = 0x0201;
+  ParkingExitMsg = 0x0202;
+  ParkingPayMsg = 0x0203;
+  ParkingSentryMsg = 0x0204;
+
+  // Team Push Message 0x0301 ~ 0x0400
+  TeamUserLocUploadReqMsg = 0x0301;    // C->S 用户坐标上传请求 UserLocRequest
+  TeamUserLocUploadRespMsg = 0x0302;   // S->C 用户坐标上传返回 UserLocResponse
+  TeamPushCarLocsMsg = 0x0303;         // S->C 推送同组队的坐标给用户 PushCarLocs
+  TeamPushTeamInfoMsg = 0x0304;        // S->C 组队属性同步结构 PushTeamInfo
+}
+
+enum ErrorCode {
+  OK = 0;  // 成功
+  Req_ILLEGALITY = 201;   // 非法请求
+  Req_UNIDENTIFICATION = 202; // 未识别请求
+  PARAMETER_ERROR = 203;   // 输入参数错误
+  PARAMETER_LAKE = 204;   // 缺少必填参数
+  USER_NO_ACCESS = 205;   // 无权限操作, 未登录用户
+  REQUEST_TIMEOUT = 206;   // 请求超时
+  INTERNAL_ERROR = 207;   // 内部错误
+  NO_PERMISSION = 208;   // 此用户无权限操作
+
+  TOKEN_ERROR = 403; // token验证失败
+
+  TeamPushIDEmpty = 1001; // 组队PushID为空
+}
+
+service GoPush {
+    // 设备心跳信息
+    rpc Ping(PingRequest) returns (PingResponse) {}
+    rpc PushRegister(UserLocRequest) returns (UserLocResponse) {}
+    rpc StreamSubscribe(stream SubscribeRequest) returns (stream SubscribeResponse) {}
+    // S->C C->S 用户上传坐标信息和服务器推送组队用户坐标列表
+    rpc TeamStreamPushCarLocs(stream PushUserLoc) returns (stream PushCarLocs) {}
+
+    // C->S 用户坐标上传返回 - 暂时废弃
+    // rpc TeamStreamUserLocUpdate(stream UserLocRequest) returns (UserLocResponse) {}
+}
+
+// 队列传输载荷封装
+// 内部使用，客户端不使用
+message PushPayload {
+  string pushid = 1;
+  MsgType msg_type = 2;
+  bytes msg_data = 3;
+}
+
+// 网络传输载荷封装, Go版本暂时没有使用
+// 所有客户端和服务端之间传输都消息由此进行封装
+// 其中 msg_type 为所需传输消息的消息类型
+// msg_data 为所需传输消息序列化后的数据
+message PushNetPayload {
+  MsgType msg_type = 3;
+  bytes msg_data = 4;
+}
+
+message SubscribeRequest {
+  int64 ts = 1;
+  MsgType msg_type = 2;
+  string pushid = 3;
+  string confirmid = 4; // 格式: 来源(S->C:1,C->S:2)|消息类型(4位16进制)|时间戳|线程ID(4位16进制)|随机数(2位16进制)
+  bytes msg_data = 5;
+}
+
+message SubscribeResponse {
+  int64 ts = 1;
+  ErrorCode code = 2;
+  MsgType msg_type = 3;
+  string pushid = 4;
+  string confirmid = 5; // 格式: 来源(S->C:1,C->S:2)|消息类型(4位16进制)|时间戳|线程ID(4位16进制)|随机数(2位16进制)
+  bytes msg_data = 6;
+}
+
+message PingRequest {
+	  int64 ts = 1;
+	  string pushid = 2;
+	}
+
+	message PingResponse {
+	  int64 ts = 1;
+	  ErrorCode code = 2;
+	  string msg = 3;
+	}
+
+	// Update User Info
+	message PushUserInfo {
+	    string name = 1;
+	    string head = 2;
+	    string pushid = 3;
+	    string uid = 4;
+	    float lng = 5;
+	    float lat = 6;
+	    bool isOnline = 7;
+	    string deviceid = 8;
+	}
+
+	// C->S 用户坐标上传请求
+	message UserLocRequest {
+	  int64 ts = 1;
+	  string pushid = 2;
+	  PushUserInfo userInfo = 3;
+	}
+
+	// S->C 用户坐标上传返回
+	message UserLocResponse {
+	    int64 ts = 1;
+	    ErrorCode code = 2;
+	    string msg = 3;
+	}
+
+	// S->C 推送同组队的坐标给用户
+	message PushCarLocs {
+	  int64 ts = 1;
+	  ErrorCode code = 2;
+	  MsgType msg_type = 3;
+	  string pushid = 4;
+	  repeated PushUserInfo userInfo = 5;
+	}
+
+	message PushUserLoc {
+	  int64 ts = 1;
+	  MsgType msg_type = 2;
+	  string pushid = 3;
+	  PushUserInfo userInfo = 4;
+	}
+
+	message POIInfo {
+	  string bid = 1;
+	  string name = 2;
+	  float lng = 3;
+	  float lat = 4;
+	}
+
+	// S->C 组队属性同步结构
+	message PushTeamInfo {
+	  enum TeamStatus {
+	    STATUS_UNKNOWN = 0;
+	    STATUS_JOIN = 1; // 队员主动加入
+	    STATUS_EXIT = 2; // 队员主动退出
+	    STATUS_KICK = 3; // 队员被剔除
+	    STATUS_NICKNAME = 4; // 队员昵称修改
+	    STATUS_DISMISS = 5; // 组队解散
+	    STATUS_DESTINATION_UP = 6; // 组队目的地变更
+	    STATUS_OVERDUE_DISMISS = 7; //组队过期，被强制解散
+	  }
+	  TeamStatus status = 1;
+	  string pushid = 2;
+	  string uid = 3;
+	  string msgid = 4;
+	  POIInfo poiInfo = 5;
+	  repeated PushUserInfo userInfo = 6;
+	  string deviceid = 7;
+	}
