@@ -16,7 +16,7 @@ import (
 
 
 type BackModule struct {
-	backEnd tcpserver.TcpServer
+	BackEndSer tcpserver.TcpServer
 	HeartBeatChan chan uint8
 	frontEnd tcpserver.TcpServer
 	SessionManager * SessionManager
@@ -36,10 +36,10 @@ func GetInstance() *BackModule {
 }
 
 func (handle *BackModule) Init(){
-	handle.backEnd = &basenet.NetServer{} //采用go程方式的结构可以改为epoll方式
-	handle.backEnd.SetAcceptCallback (BackOnAccept)
-	handle.backEnd.SetReceiveCallback(BackOnReceive)
-	handle.backEnd.SetCloseCallback	 (BackOnClose)
+	handle.BackEndSer = &basenet.NetServer{} //采用go程方式的结构可以改为epoll方式
+	handle.BackEndSer.SetAcceptCallback (BackOnAccept)
+	handle.BackEndSer.SetReceiveCallback(BackOnReceive)
+	handle.BackEndSer.SetCloseCallback	 (BackOnClose)
 
 	handle.SessionManager =  GetFrontSessionInstance()
 	handle.SessionByIpManager =  GetFrontSessionByIpInstance()
@@ -48,7 +48,7 @@ func (handle *BackModule) Init(){
 
 	handle.CreateGoPool()
 
-	handle.backEnd.SetCallBackHandle(handle)
+	handle.BackEndSer.SetCallBackHandle(handle)
 }
 
 
@@ -90,7 +90,7 @@ func (handle *BackModule) Start(config datadef.GateWayConfig){
 }
 
 func (handle *BackModule) Stop(){
-	handle.backEnd.ShutDown()
+	handle.BackEndSer.ShutDown()
 	handle.DestroyGoPool()
 }
 
@@ -99,7 +99,7 @@ func (handle *BackModule) Stop(){
 */
 func (handle *BackModule) SendToManager(buf []byte){
 	session := handle.SessionManager.Map.GetAverage().(*Session)
-	handle.backEnd.Send(session.Connection,buf)
+	handle.BackEndSer.Send(session.Connection,buf)
 }
 
 func BackOnAccept (handle interface{} ,conn net.Conn){

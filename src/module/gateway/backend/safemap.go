@@ -3,7 +3,6 @@ package backend
 import (
 	"sync"
 	"Pushsystem/src/utils"
-	"fmt"
 )
 
 const DefaultManagerNums = 3000  //假设3000个manager
