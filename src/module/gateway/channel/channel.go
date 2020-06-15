@@ -4,6 +4,7 @@ import (
 	"github.com/letsfire/factory"
 	"fmt"
 	"Pushsystem/src/module/gateway/backend"
+	"Pushsystem/src/const"
 )
 
 type StreamChannel interface {
@@ -13,9 +14,6 @@ type StreamChannel interface {
 	Stop()		//停止通道
 }
 
-const UpStreamGoRoutineMaxNum 	= 20000  //最大20000个go程池
-const UpStreamGoRoutineInitNum 	= 50	   //初始化50个go程大小
-const MessageQueueCapity 		= 100000	   //十万个大小队列
 
 /*
 	上行数据通道
@@ -48,8 +46,8 @@ func TaskLineExcute(args interface{}) {
 }
 
 func (obj * UpStreamChannel) Init()  {
-	obj.GoPool = factory.NewMaster(UpStreamGoRoutineMaxNum, UpStreamGoRoutineInitNum)
-	obj.MsgQueue = make(chan []byte, MessageQueueCapity)
+	obj.GoPool = factory.NewMaster(_const.UpStreamGoRoutineMaxNum, _const.UpStreamGoRoutineInitNum)
+	obj.MsgQueue = make(chan []byte, _const.UpStreamMessageQueueCapity)
 	obj.TaskLine = obj.GoPool.AddLine(TaskLineExcute)
 	obj.Consumer = backend.GetInstance()
 }

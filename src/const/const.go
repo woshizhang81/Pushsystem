@@ -12,7 +12,10 @@ const GateWayProtocalDeviceIDOffset 	= 	39 	// 第40字节，偏移为39
 const GateWayProtocalDeviceTypeOffset 	= 	89 	// 第90字节，偏移为89
 
 
-
 const DownStreamGoRoutineMaxNum 	= 2000  //最大20000个go程池
 const DownStreamGoRoutineInitNum 	= 50	   //初始化50个go程大小
 const DownMessageQueueCapity 		= 100000	   //十万个大小队列
+
+const UpStreamGoRoutineMaxNum 		= 20000  //最大20000个go程池
+const UpStreamGoRoutineInitNum 		= 50	   //初始化50个go程大小
+const UpStreamMessageQueueCapity 	= 100000	   //十万个大小队列
