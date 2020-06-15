@@ -18,8 +18,8 @@ import (
 
 type FrontModule struct {
 	ChanArray [_const.GateWaySlotNum]chan uint8
-	frontEnd tcpserver.TcpServer
-	SessionManager * SessionManager
+	FrontEnd tcpserver.TcpServer
+	SessionByIDManager * SessionManager
 	SessionByIpManager * SessionManagerByIp
 	//SlotPool  *factory.Master
 	Channel *channel.UpStreamChannel
@@ -42,7 +42,7 @@ func process(handle interface{},id int ,c  <-chan uint8){
 		case _, ok := <-c :
 			if ok {
 				//fmt.Println("hbcheck",id,time.Now().Unix())
-				obj.SessionManager.HBCheckBySlot(id,_const.GateWayFrontHbDur)
+				obj.SessionByIDManager.HBCheckBySlot(id,_const.GateWayFrontHbDur)
 			} else {
 				//收到关闭信号 退出 go程
 				break
@@ -73,8 +73,8 @@ func (handle *FrontModule) DestroyGoPool(){
 
 /* 初始化 */
 func (handle *FrontModule) Init(){
-	handle.frontEnd = &basenet.NetServer{} //采用go程方式的结构可以改为epoll方式
-	handle.SessionManager =  GetFrontSessionInstance()
+	handle.FrontEnd = &basenet.NetServer{} //采用go程方式的结构可以改为epoll方式
+	handle.SessionByIDManager =  GetFrontSessionInstance()
 	handle.SessionByIpManager =  GetFrontSessionByIpInstance()
 	handle.Channel = &channel.UpStreamChannel{}
 	handle.Channel.Init()
@@ -82,20 +82,20 @@ func (handle *FrontModule) Init(){
 	handle.CreateGoPool()
 
 	//handle.SlotPool = factory.NewMaster(_const.GateWaySlotNum,_const.GateWaySlotNum) //同slot数目相同
-	handle.frontEnd.SetCallBackHandle(handle)
-	handle.frontEnd.SetAcceptCallback(FrontOnAccept)
-	handle.frontEnd.SetReceiveCallback(FrontOnReceive)
-	handle.frontEnd.SetCloseCallback(FrontOnClose)
+	handle.FrontEnd.SetCallBackHandle(handle)
+	handle.FrontEnd.SetAcceptCallback(FrontOnAccept)
+	handle.FrontEnd.SetReceiveCallback(FrontOnReceive)
+	handle.FrontEnd.SetCloseCallback(FrontOnClose)
 }
 
 func (handle *FrontModule) Start(config datadef.GateWayConfig){
-	handle.frontEnd.Create(config.Frontend.Ip , config.Frontend.Port)
+	handle.FrontEnd.Create(config.Frontend.Ip , config.Frontend.Port)
 }
 
 /*
 */
 func (handle *FrontModule) Stop(){
-	handle.frontEnd.ShutDown()
+	handle.FrontEnd.ShutDown()
 	handle.DestroyGoPool()
 }
 
@@ -149,7 +149,7 @@ func FrontOnClose (handle interface{},conn net.Conn){
 	//同时删除对应客户端Session信息
 	module.SessionByIpManager.Delete(ipAddr)
 	uniqueId := utils.UniqueId(int32(deviceType),deviceId)
-	module.SessionManager.Delete(uniqueId)
+	module.SessionByIDManager.Delete(uniqueId)
 }
 
 

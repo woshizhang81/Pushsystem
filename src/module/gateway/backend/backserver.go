@@ -61,7 +61,7 @@ func process(handle interface{},id int ,c  <-chan uint8){
 		case _, ok := <-c :
 			if ok {
 				//fmt.Println("hbcheck",id,time.Now().Unix())
-				obj.SessionManager.HBCheckBySlot(id,_const.GateWayFrontHbDur)
+				obj.SessionManager.HBCheckBySlot(id,_const.GateWayBackHbDur)
 			} else {
 				//收到关闭信号 退出 go程
 				break

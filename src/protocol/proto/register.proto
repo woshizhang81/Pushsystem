@@ -7,3 +7,1896 @@ message UserLocRequest {
 	string pushid = 2;
 }
 
+array(29) {
+["BDUSS"]=>
+string(0) ""
+["ak"]=>
+string(20) "venucia532_cantonese"
+["av"]=>
+string(2) "10"
+["cn"]=>
+string(9) "300000000"
+["coordtype"]=>
+string(1) "2"
+["crd"]=>
+string(20) "113.948913_22.530194"
+["language"]=>
+string(9) "cantonese"
+["uuid"]=>
+string(17) "dumi_test_iov_897"
+["word"]=>
+string(12) "闩上车窗"
+["dumi_appid"]=>
+string(18) "dmE4A86455817792E0"
+["dumi_appkey"]=>
+string(32) "8BEFD2F82EBCA9966EE50EBA6A87970B"
+["need_auth_av"]=>
+int(15)
+["view_av"]=>
+int(10)
+["use_lexer_word"]=>
+bool(true)
+["hint_bot_confidence"]=>
+int(27)
+["need_music_resource"]=>
+bool(true)
+["need_nets_music"]=>
+bool(true)
+["music_qq"]=>
+bool(true)
+["need_audio_resource"]=>
+bool(true)
+["MultiLanguage"]=>
+string(13) "["cantonese"]"
+["film_ticket_buyer_no_multi"]=>
+bool(true)
+["wake_up_word"]=>
+string(12) "你好小辰"
+["need_toplist_search"]=>
+bool(true)
+["deviceuserid"]=>
+NULL
+["original_ak"]=>
+string(10) "venucia532"
+["skip_emotion"]=>
+bool(true)
+["c"]=>
+string(1) "a"
+["address_info"]=>
+array(0) {
+}
+["clientip"]=>
+string(14) "172.18.190.100"
+MODE_LIST_OPEN mode_list || null	codriver || null || item
+MODE_LIST_OPEN user_general_open || null	codriver || open
+MODE_LIST_OPEN	0.5	user_general_open,0,1;mode_list,0,1
+
+MODE_LIST_OPEN mode_list	codriver || null || item
+MODE_LIST_OPEN user_general_open || null	codriver || ope
+
+MODE_LIST_OPEN || mode_list	null || null || item
+MODE_LIST_OPEN || user_general_open || null	codriver || open
+
+MODE_LIST_CLOSE	0.5	user_general_open,0,1;mode_list,0,1
+
+
+AMBIENTLIGHTCOLOUR	0.5	user_general_set,0,1;user_ambient_light,0,1;common_color,0,1
+
+AMBIENTLIGHTCOLOUR || user_ambient_light	null || null || item || ambient_lamp
+AMBIENTLIGHTCOLOUR || common_color	null || null || pos
+AMBIENTLIGHTCOLOUR || user_general_set || null	codriver || operate
+
+
+MODE_LIST_OPEN || user_general_open || null	codriver || open
+REER_MIRR_OPEN || user_general_set,0,1;mode_list,0,
+
+REER_MIRR_OPEN || user_general_set	null || null || item || back_mirror_mode
+REER_MIRR_OPEN || user_rear_mirror	codriver || open
+
+REER_MIRR_OPEN || user_rear_mirror	null || null || item || back_mirror_mode
+REER_MIRR_OPEN || user_general_set || null	codriver || open
+
+REER_MIRR_OPEN || user_rear_mirror || null	null || null || item || back_mirror_mode
+
+
+#0  Service_Page_Nlp_DefaultService->execute(Array ([ak] => venucia534,[av] => 10,[cn] => 300000000,[coordtype] => 2,[crd] => 113.948913_22.530194,[uuid] => dumi_test_iov_897,[word] => 车漆封釉作用有哪些,[dumi_appid] => dm0C4FD4987BC43061,[dumi_appkey] => 11AB249BD3BECCE982D26DD2DB802E33,[need_auth_av] => 15,[view_av] => 10,[use_lexer_word] => 1,[hint_bot_confidence] => 27,[need_music_resource] => 1,[music_qq] => 1,[need_audio_resource] => 1,[MultiLanguage] => ["cantonese"],[film_ticket_buyer_no_multi] => 1,[wake_up_word] => 你好小辰,[need_toplist_search] => 1,[audio_ximalaya] => 1,[news_leting] => 1,[keylist] => Array ([0] => view_av::,[1] => use_lexer_word::,[2] => hint_bot_confidence::,[3] => need_music_resource::,[4] => need_audio_resource::,[5] => MultiLanguage::,[6] => film_ticket_buyer_no_multi::,[7] => need_toplist_search::),[deviceuserid] => ,[c] => a,[address_info] => Array (),[clientip] => 172.18.190.100)) called at [/home/zhangjj/odp/app/codriverapi/models/service/page/nlp/DefaultService.php:780]
+#1  Service_Page_Nlp_DefaultService->_withoutBdussResquest(Array ([ak] => venucia534,[av] => 10,[cn] => 300000000,[coordtype] => 2,[crd] => 113.948913_22.530194,[uuid] => dumi_test_iov_897,[word] => 车漆封釉作用有哪些,[dumi_appid] => dm0C4FD4987BC43061,[dumi_appkey] => 11AB249BD3BECCE982D26DD2DB802E33,[need_auth_av] => 15,[view_av] => 10,[use_lexer_word] => 1,[hint_bot_confidence] => 27,[need_music_resource] => 1,[music_qq] => 1,[need_audio_resource] => 1,[MultiLanguage] => ["cantonese"],[film_ticket_buyer_no_multi] => 1,[wake_up_word] => 你好小辰,[need_toplist_search] => 1,[audio_ximalaya] => 1,[news_leting] => 1,[keylist] => Array ([0] => view_av::,[1] => use_lexer_word::,[2] => hint_bot_confidence::,[3] => need_music_resource::,[4] => need_audio_resource::,[5] => MultiLanguage::,[6] => film_ticket_buyer_no_multi::,[7] => need_toplist_search::),[deviceuserid] => ,[c] => a,[address_info] => Array (),[clientip] => 172.18.190.100)) called at [/home/zhangjj/odp/app/codriverapi/models/service/page/nlp/Venucia.php:492]
+#2  Service_Page_Nlp_Venucia->execute(Array ([BDUSS] => qwqw,[ak] => venucia534,[av] => 10,[cn] => 300000000,[coordtype] => 2,[crd] => 113.948913_22.530194,[uuid] => dumi_test_iov_897,[word] => 车漆封釉作用有哪些,[dumi_appid] => dm0C4FD4987BC43061,[dumi_appkey] => 11AB249BD3BECCE982D26DD2DB802E33,[need_auth_av] => 15,[view_av] => 10,[use_lexer_word] => 1,[hint_bot_confidence] => 27,[need_music_resource] => 1,[music_qq] => 1,[need_audio_resource] => 1,[MultiLanguage] => ["cantonese"],[film_ticket_buyer_no_multi] => 1,[wake_up_word] => 你好小辰,[need_toplist_search] => 1,[audio_ximalaya] => 1,[news_leting] => 1,[keylist] => Array ([0] => view_av::,[1] => use_lexer_word::,[2] => hint_bot_confidence::,[3] => need_music_resource::,[4] => need_audio_resource::,[5] => MultiLanguage::,[6] => film_ticket_buyer_no_multi::,[7] => need_toplist_search::),[deviceuserid] => ,[c] => a,[address_info] => Array (),[clientip] => 172.18.190.100)) called at [/home/zhangjj/odp/app/codriverapi/actions/nlp/RoboKit.php:77]
+#3  Action_RoboKit->execute()
+#4  Ap_Application->run() called at [/home/zhangjj/odp/webroot/codriverapi/index.php:11]
+uuuuuuuuuuuuuuuuu
+11111111111111
+array(5) {
+  ["errno"]=>
+  int(0)
+  ["message"]=>
+  string(7) "success"
+  ["raw_text"]=>
+  string(27) "车漆封釉作用有哪些"
+  ["data_resource"]=>
+  int(6)
+  ["result"]=>
+  array(1) {
+    [0]=>
+    array(6) {
+      ["card_type"]=>
+      string(26) "venucia534_electronic_book"
+      ["intent"]=>
+      string(9) "faq_found"
+      ["tts_status"]=>
+      array(1) {
+        ["tts"]=>
+        string(114) "&nbsp;特点是防酸、抗腐、耐高温、耐磨、耐水洗、渗透力强、附着力强、高光泽度等。"
+      }
+      ["debug"]=>
+      array(1) {
+        ["hint_status"]=>
+        string(3) "out"
+      }
+      ["data"]=>
+      array(1) {
+        ["answer"]=>
+        string(114) "&nbsp;特点是防酸、抗腐、耐高温、耐磨、耐水洗、渗透力强、附着力强、高光泽度等。"
+      }
+      ["bot_session"]=>
+      array(2) {
+        ["bot_id"]=>
+        string(7) "1028694"
+        ["bot_session_id"]=>
+        string(39) "session-1591771485894-35238225-8013-997"
+      }
+    }
+  }
+}
+#0  Service_Page_Nlp_DefaultService->execute(Array ([BDUSS] => qwqw,[ak] => venucia534,[av] => 10,[cn] => 300000000,[coordtype] => 2,[crd] => 113.948913_22.530194,[uuid] => dumi_test_iov_897,[word] => 车漆封釉作用有哪些,[dumi_appid] => dm0C4FD4987BC43061,[dumi_appkey] => 11AB249BD3BECCE982D26DD2DB802E33,[need_auth_av] => 15,[view_av] => 10,[use_lexer_word] => 1,[hint_bot_confidence] => 27,[need_music_resource] => 1,[music_qq] => 1,[need_audio_resource] => 1,[MultiLanguage] => ["cantonese"],[film_ticket_buyer_no_multi] => 1,[wake_up_word] => 你好小辰,[need_toplist_search] => 1,[audio_ximalaya] => 1,[news_leting] => 1,[keylist] => Array ([0] => view_av::,[1] => use_lexer_word::,[2] => hint_bot_confidence::,[3] => need_music_resource::,[4] => need_audio_resource::,[5] => MultiLanguage::,[6] => film_ticket_buyer_no_multi::,[7] => need_toplist_search::),[deviceuserid] => ,[c] => a,[address_info] => Array (),[clientip] => 172.18.190.100)) called at [/home/zhangjj/odp/app/codriverapi/models/service/page/nlp/Venucia.php:499]
+#1  Service_Page_Nlp_Venucia->execute(Array ([BDUSS] => qwqw,[ak] => venucia534,[av] => 10,[cn] => 300000000,[coordtype] => 2,[crd] => 113.948913_22.530194,[uuid] => dumi_test_iov_897,[word] => 车漆封釉作用有哪些,[dumi_appid] => dm0C4FD4987BC43061,[dumi_appkey] => 11AB249BD3BECCE982D26DD2DB802E33,[need_auth_av] => 15,[view_av] => 10,[use_lexer_word] => 1,[hint_bot_confidence] => 27,[need_music_resource] => 1,[music_qq] => 1,[need_audio_resource] => 1,[MultiLanguage] => ["cantonese"],[film_ticket_buyer_no_multi] => 1,[wake_up_word] => 你好小辰,[need_toplist_search] => 1,[audio_ximalaya] => 1,[news_leting] => 1,[keylist] => Array ([0] => view_av::,[1] => use_lexer_word::,[2] => hint_bot_confidence::,[3] => need_music_resource::,[4] => need_audio_resource::,[5] => MultiLanguage::,[6] => film_ticket_buyer_no_multi::,[7] => need_toplist_search::),[deviceuserid] => ,[c] => a,[address_info] => Array (),[clientip] => 172.18.190.100)) called at [/home/zhangjj/odp/app/codriverapi/actions/nlp/RoboKit.php:77]
+#2  Action_RoboKit->execute()
+#3  Ap_Application->run() called at [/home/zhangjj/odp/webroot/codriverapi/index.php:11]
+uuuuuuuuuuuuuuuuu
+11111111111111
+array(8) {
+  ["errno"]=>
+  int(0)
+  ["message"]=>
+  string(7) "success"
+  ["raw_text"]=>
+  string(27) "车漆封釉作用有哪些"
+  ["result"]=>
+  array(1) {
+    [0]=>
+    array(3) {
+      ["card_type"]=>
+      string(10) "dumi_doudi"
+      ["intent"]=>
+      string(7) "unknown"
+      ["tts_status"]=>
+      array(1) {
+        ["tts"]=>
+        string(60) "再多给我点时间学习吧，先换个问题问我啊。"
+      }
+    }
+  }
+  ["data_resource"]=>
+  int(2)
+  ["should_end_session"]=>
+  NULL
+  ["logid"]=>
+  string(10) "2686864063"
+  ["hint_status"]=>
+  string(3) "out"
+}
+{"errno":0,"raw_text":"\u8f66\u6f06\u5c01\u91c9\u4f5c\u7528\u6709\u54ea\u4e9b","result":[{"card_type":"unknown","intent":"unknown","tts_status":{"tts":"\u6211\u6682\u65f6\u8fd8\u6ca1\u6709\u5b66\u4e60\u8fd9\u4e2a\u77e5\u8bc6"},"data":{}}],"data_resource":8,"logid":"2685574307","spend_time":"1495ms","uuid":"dumi_test_iov_897","time":1591771487}
+
+
+1111111111111111
+array(5) {
+  ["usid"]=>
+  string(19) "iov-nlu-us-classify"
+  ["logid"]=>
+  string(10) "1609167681"
+  ["query"]=>
+  string(0) ""
+  ["uuid"]=>
+  string(0) ""
+  ["arrinput"]=>
+  array(39) {
+    ["ak"]=>
+    string(10) "venucia534"
+    ["av"]=>
+    string(2) "10"
+    ["cn"]=>
+    string(9) "300000000"
+    ["coordtype"]=>
+    string(1) "2"
+    ["crd"]=>
+    string(20) "113.948913_22.530194"
+    ["uuid"]=>
+    string(17) "dumi_test_iov_897"
+    ["word"]=>
+    string(27) "车漆封釉作用有哪些"
+    ["dumi_appid"]=>
+    string(18) "dm0C4FD4987BC43061"
+    ["dumi_appkey"]=>
+    string(32) "11AB249BD3BECCE982D26DD2DB802E33"
+    ["need_auth_av"]=>
+    int(15)
+    ["view_av"]=>
+    int(10)
+    ["use_lexer_word"]=>
+    bool(true)
+    ["hint_bot_confidence"]=>
+    int(27)
+    ["need_music_resource"]=>
+    bool(true)
+    ["music_qq"]=>
+    bool(true)
+    ["need_audio_resource"]=>
+    bool(true)
+    ["MultiLanguage"]=>
+    string(13) "["cantonese"]"
+    ["film_ticket_buyer_no_multi"]=>
+    bool(true)
+    ["wake_up_word"]=>
+    string(12) "你好小辰"
+    ["need_toplist_search"]=>
+    bool(true)
+    ["audio_ximalaya"]=>
+    bool(true)
+    ["news_leting"]=>
+    bool(true)
+    ["keylist"]=>
+    array(8) {
+      [0]=>
+      string(9) "view_av::"
+      [1]=>
+      string(16) "use_lexer_word::"
+      [2]=>
+      string(21) "hint_bot_confidence::"
+      [3]=>
+      string(21) "need_music_resource::"
+      [4]=>
+      string(21) "need_audio_resource::"
+      [5]=>
+      string(15) "MultiLanguage::"
+      [6]=>
+      string(28) "film_ticket_buyer_no_multi::"
+      [7]=>
+      string(21) "need_toplist_search::"
+    }
+    ["deviceuserid"]=>
+    NULL
+    ["c"]=>
+    string(1) "a"
+    ["address_info"]=>
+    array(0) {
+    }
+    ["clientip"]=>
+    string(14) "172.18.190.100"
+    ["origin_word"]=>
+    string(27) "车漆封釉作用有哪些"
+    ["unit_bot_list"]=>
+    array(19) {
+      [43024]=>
+      array(8) {
+        ["iov_bot_id"]=>
+        string(3) "188"
+        ["card_type"]=>
+        string(8) "iovmusic"
+        ["source"]=>
+        string(1) "6"
+        ["status"]=>
+        string(1) "1"
+        ["source_name"]=>
+        string(5) "43024"
+        ["bot_name"]=>
+        string(9) "IOV_MUSIC"
+        ["handler"]=>
+        string(0) ""
+        ["scenes_type"]=>
+        NULL
+      }
+      [34829]=>
+      array(8) {
+        ["iov_bot_id"]=>
+        string(3) "116"
+        ["card_type"]=>
+        string(4) "hint"
+        ["source"]=>
+        string(1) "6"
+        ["status"]=>
+        string(1) "1"
+        ["source_name"]=>
+        string(5) "34829"
+        ["bot_name"]=>
+        string(4) "hint"
+        ["handler"]=>
+        string(28) "Service_Data_Unit_Scene_Hint"
+        ["scenes_type"]=>
+        NULL
+      }
+      [59225]=>
+      array(8) {
+        ["iov_bot_id"]=>
+        string(3) "234"
+        ["card_type"]=>
+        string(13) "voice_control"
+        ["source"]=>
+        string(1) "6"
+        ["status"]=>
+        string(1) "1"
+        ["source_name"]=>
+        string(5) "59225"
+        ["bot_name"]=>
+        string(12) "发音控制"
+        ["handler"]=>
+        string(0) ""
+        ["scenes_type"]=>
+        NULL
+      }
+      [57971]=>
+      array(8) {
+        ["iov_bot_id"]=>
+        string(3) "232"
+        ["card_type"]=>
+        string(19) "ven_electronic_book"
+        ["source"]=>
+        string(1) "6"
+        ["status"]=>
+        string(1) "1"
+        ["source_name"]=>
+        string(5) "57971"
+        ["bot_name"]=>
+        string(18) "启辰电子手册"
+        ["handler"]=>
+        string(27) "Service_Data_Unit_Scene_Faq"
+        ["scenes_type"]=>
+        NULL
+      }
+      [7467]=>
+      array(8) {
+        ["iov_bot_id"]=>
+        string(2) "57"
+        ["card_type"]=>
+        string(9) "multi_map"
+        ["source"]=>
+        string(1) "6"
+        ["status"]=>
+        string(1) "1"
+        ["source_name"]=>
+        string(4) "7467"
+        ["bot_name"]=>
+        string(18) "多途径点导航"
+        ["handler"]=>
+        string(28) "Service_Data_Unit_Navigation"
+        ["scenes_type"]=>
+        NULL
+      }
+      [43785]=>
+      array(8) {
+        ["iov_bot_id"]=>
+        string(3) "189"
+        ["card_type"]=>
+        string(6) "aiapps"
+        ["source"]=>
+        string(1) "6"
+        ["status"]=>
+        string(1) "1"
+        ["source_name"]=>
+        string(5) "43785"
+        ["bot_name"]=>
+        string(9) "小程序"
+        ["handler"]=>
+        string(0) ""
+        ["scenes_type"]=>
+        NULL
+      }
+      [200016]=>
+      array(8) {
+        ["iov_bot_id"]=>
+        string(3) "128"
+        ["card_type"]=>
+        string(3) "app"
+        ["source"]=>
+        string(1) "8"
+        ["status"]=>
+        string(1) "1"
+        ["source_name"]=>
+        string(6) "200016"
+        ["bot_name"]=>
+        string(32) "控制指令:应用控制-中文"
+        ["handler"]=>
+        string(0) ""
+        ["scenes_type"]=>
+        NULL
+      }
+      [200015]=>
+      array(8) {
+        ["iov_bot_id"]=>
+        string(3) "108"
+        ["card_type"]=>
+        string(8) "codriver"
+        ["source"]=>
+        string(1) "8"
+        ["status"]=>
+        string(1) "1"
+        ["source_name"]=>
+        string(6) "200015"
+        ["bot_name"]=>
+        string(32) "控制指令:通用控制-中文"
+        ["handler"]=>
+        string(0) ""
+        ["scenes_type"]=>
+        NULL
+      }
+      [47200]=>
+      array(8) {
+        ["iov_bot_id"]=>
+        string(3) "211"
+        ["card_type"]=>
+        string(16) "scheduleReminder"
+        ["source"]=>
+        string(1) "6"
+        ["status"]=>
+        string(1) "1"
+        ["source_name"]=>
+        string(5) "47200"
+        ["bot_name"]=>
+        string(14) "日程管理v2"
+        ["handler"]=>
+        string(0) ""
+        ["scenes_type"]=>
+        NULL
+      }
+      [50096]=>
+      array(8) {
+        ["iov_bot_id"]=>
+        string(3) "218"
+        ["card_type"]=>
+        string(12) "train_ticket"
+        ["source"]=>
+        string(1) "6"
+        ["status"]=>
+        string(1) "1"
+        ["source_name"]=>
+        string(5) "50096"
+        ["bot_name"]=>
+        string(15) "火车票查询"
+        ["handler"]=>
+        string(0) ""
+        ["scenes_type"]=>
+        NULL
+      }
+      [47382]=>
+      array(8) {
+        ["iov_bot_id"]=>
+        string(2) "19"
+        ["card_type"]=>
+        string(9) "telephone"
+        ["source"]=>
+        string(1) "6"
+        ["status"]=>
+        string(1) "1"
+        ["source_name"]=>
+        string(5) "47382"
+        ["bot_name"]=>
+        string(12) "电话多轮"
+        ["handler"]=>
+        string(0) ""
+        ["scenes_type"]=>
+        NULL
+      }
+      [88544]=>
+      array(8) {
+        ["iov_bot_id"]=>
+        string(3) "289"
+        ["card_type"]=>
+        string(15) "audio.joke.play"
+        ["source"]=>
+        string(1) "6"
+        ["status"]=>
+        string(1) "1"
+        ["source_name"]=>
+        string(5) "88544"
+        ["bot_name"]=>
+        string(6) "笑话"
+        ["handler"]=>
+        string(0) ""
+        ["scenes_type"]=>
+        NULL
+      }
+      [88524]=>
+      array(8) {
+        ["iov_bot_id"]=>
+        string(3) "288"
+        ["card_type"]=>
+        string(14) "tongue_twister"
+        ["source"]=>
+        string(1) "6"
+        ["status"]=>
+        string(1) "1"
+        ["source_name"]=>
+        string(5) "88524"
+        ["bot_name"]=>
+        string(25) "绕口令unit平台自研"
+        ["handler"]=>
+        string(0) ""
+        ["scenes_type"]=>
+        NULL
+      }
+      [17493]=>
+      array(8) {
+        ["iov_bot_id"]=>
+        string(2) "92"
+        ["card_type"]=>
+        string(13) "custom_wakeup"
+        ["source"]=>
+        string(1) "6"
+        ["status"]=>
+        string(1) "1"
+        ["source_name"]=>
+        string(5) "17493"
+        ["bot_name"]=>
+        string(18) "自定义唤醒词"
+        ["handler"]=>
+        string(30) "Service_Data_Unit_CustomWakeup"
+        ["scenes_type"]=>
+        NULL
+      }
+      [1743]=>
+      array(8) {
+        ["iov_bot_id"]=>
+        string(2) "59"
+        ["card_type"]=>
+        string(5) "hotel"
+        ["source"]=>
+        string(1) "6"
+        ["status"]=>
+        string(1) "1"
+        ["source_name"]=>
+        string(4) "1743"
+        ["bot_name"]=>
+        string(6) "酒店"
+        ["handler"]=>
+        string(23) "Service_Data_Unit_Hotel"
+        ["scenes_type"]=>
+        NULL
+      }
+      [63994]=>
+      array(8) {
+        ["iov_bot_id"]=>
+        string(3) "241"
+        ["card_type"]=>
+        string(12) "talk_service"
+        ["source"]=>
+        string(1) "6"
+        ["status"]=>
+        string(1) "1"
+        ["source_name"]=>
+        string(5) "63994"
+        ["bot_name"]=>
+        string(6) "闲聊"
+        ["handler"]=>
+        string(0) ""
+        ["scenes_type"]=>
+        NULL
+      }
+      [71244]=>
+      array(8) {
+        ["iov_bot_id"]=>
+        string(3) "247"
+        ["card_type"]=>
+        string(4) "bktv"
+        ["source"]=>
+        string(1) "6"
+        ["status"]=>
+        string(1) "1"
+        ["source_name"]=>
+        string(5) "71244"
+        ["bot_name"]=>
+        string(15) "项目ktv分支"
+        ["handler"]=>
+        string(0) ""
+        ["scenes_type"]=>
+        NULL
+      }
+      [27252]=>
+      array(8) {
+        ["iov_bot_id"]=>
+        string(3) "238"
+        ["card_type"]=>
+        string(11) "planeticket"
+        ["source"]=>
+        string(1) "6"
+        ["status"]=>
+        string(1) "1"
+        ["source_name"]=>
+        string(5) "27252"
+        ["bot_name"]=>
+        string(15) "飞机票查询"
+        ["handler"]=>
+        string(0) ""
+        ["scenes_type"]=>
+        NULL
+      }
+      [1028694]=>
+      array(8) {
+        ["iov_bot_id"]=>
+        string(3) "301"
+        ["card_type"]=>
+        string(26) "venucia534_electronic_book"
+        ["source"]=>
+        string(1) "6"
+        ["status"]=>
+        string(1) "1"
+        ["source_name"]=>
+        string(7) "1028694"
+        ["bot_name"]=>
+        string(21) "启辰534电子手册"
+        ["handler"]=>
+        string(27) "Service_Data_Unit_Scene_Faq"
+        ["scenes_type"]=>
+        NULL
+      }
+    }
+    ["iov_parser_service"]=>
+    array(4) {
+      [0]=>
+      string(10) "venucia534"
+      [1]=>
+      string(7) "command"
+      [2]=>
+      string(9) "sensitive"
+      [3]=>
+      string(8) "navigate"
+    }
+    ["iov_parser_slot_service"]=>
+    array(1) {
+      [0]=>
+      string(6) "custom"
+    }
+    ["available_bot_list"]=>
+    array(48) {
+      [0]=>
+      string(8) "iovmusic"
+      [1]=>
+      string(4) "hint"
+      [2]=>
+      string(13) "voice_control"
+      [3]=>
+      string(19) "ven_electronic_book"
+      [4]=>
+      string(9) "multi_map"
+      [5]=>
+      string(6) "aiapps"
+      [6]=>
+      string(16) "scheduleReminder"
+      [7]=>
+      string(12) "train_ticket"
+      [8]=>
+      string(9) "telephone"
+      [9]=>
+      string(15) "audio.joke.play"
+      [10]=>
+      string(6) "tongue"
+      [11]=>
+      string(14) "tongue_twister"
+      [12]=>
+      string(13) "custom_wakeup"
+      [13]=>
+      string(5) "hotel"
+      [14]=>
+      string(12) "talk_service"
+      [15]=>
+      string(4) "bktv"
+      [16]=>
+      string(11) "planeticket"
+      [17]=>
+      string(26) "venucia534_electronic_book"
+      [18]=>
+      string(10) "ui_control"
+      [19]=>
+      string(23) "shanghai_shenzhen_stock"
+      [20]=>
+      string(7) "parking"
+      [21]=>
+      string(12) "image_search"
+      [22]=>
+      string(12) "duer_weather"
+      [23]=>
+      string(3) "map"
+      [24]=>
+      string(5) "baike"
+      [25]=>
+      string(11) "idiom_chain"
+      [26]=>
+      string(20) "navigate_instruction"
+      [27]=>
+      string(6) "player"
+      [28]=>
+      string(3) "app"
+      [29]=>
+      string(8) "codriver"
+      [30]=>
+      string(6) "travel"
+      [31]=>
+      string(13) "sound_program"
+      [32]=>
+      string(14) "hongkong_stock"
+      [33]=>
+      string(13) "movie_satisfy"
+      [34]=>
+      string(17) "film_ticket_buyer"
+      [35]=>
+      string(2) "kg"
+      [36]=>
+      string(10) "sysprofile"
+      [37]=>
+      string(8) "us_stock"
+      [38]=>
+      string(10) "restaurant"
+      [39]=>
+      string(5) "stock"
+      [40]=>
+      string(6) "flight"
+      [41]=>
+      string(10) "calculator"
+      [42]=>
+      string(9) "smarthome"
+      [43]=>
+      string(9) "violation"
+      [44]=>
+      string(5) "music"
+      [45]=>
+      string(15) "new_measurement"
+      [46]=>
+      string(10) "venucia534"
+      [47]=>
+      string(7) "unknown"
+    }
+    ["needView"]=>
+    bool(true)
+    ["arrival_crd_arr"]=>
+    array(0) {
+    }
+    ["bot_session_list_public"]=>
+    array(17) {
+      [0]=>
+      string(40) "[{"bot_id":"43024","bot_session_id":""}]"
+      [1]=>
+      string(40) "[{"bot_id":"34829","bot_session_id":""}]"
+      [2]=>
+      string(40) "[{"bot_id":"59225","bot_session_id":""}]"
+      [3]=>
+      string(40) "[{"bot_id":"57971","bot_session_id":""}]"
+      [4]=>
+      string(39) "[{"bot_id":"7467","bot_session_id":""}]"
+      [5]=>
+      string(40) "[{"bot_id":"43785","bot_session_id":""}]"
+      [6]=>
+      string(40) "[{"bot_id":"47200","bot_session_id":""}]"
+      [7]=>
+      string(40) "[{"bot_id":"50096","bot_session_id":""}]"
+      [8]=>
+      string(40) "[{"bot_id":"47382","bot_session_id":""}]"
+      [9]=>
+      string(40) "[{"bot_id":"88544","bot_session_id":""}]"
+      [10]=>
+      string(40) "[{"bot_id":"88524","bot_session_id":""}]"
+      [11]=>
+      string(40) "[{"bot_id":"17493","bot_session_id":""}]"
+      [12]=>
+      string(39) "[{"bot_id":"1743","bot_session_id":""}]"
+      [13]=>
+      string(40) "[{"bot_id":"63994","bot_session_id":""}]"
+      [14]=>
+      string(40) "[{"bot_id":"71244","bot_session_id":""}]"
+      [15]=>
+      string(40) "[{"bot_id":"27252","bot_session_id":""}]"
+      [16]=>
+      string(42) "[{"bot_id":"1028694","bot_session_id":""}]"
+    }
+    ["bot_session_list_private"]=>
+    array(2) {
+      [0]=>
+      string(41) "[{"bot_id":"200016","bot_session_id":""}]"
+      [1]=>
+      string(41) "[{"bot_id":"200015","bot_session_id":""}]"
+    }
+    ["rank_score"]=>
+    array(114) {
+      ["rus||talk_service"]=>
+      int(1)
+      ["navi_classify"]=>
+      int(2)
+      ["dumi_similarity"]=>
+      int(3)
+      ["rda_similarity"]=>
+      int(4)
+      ["unit||hint"]=>
+      int(28)
+      ["unit||news_standby"]=>
+      float(4.5)
+      ["unit||audio_standby"]=>
+      float(4.5)
+      ["iov_parser"]=>
+      int(7)
+      ["rus"]=>
+      int(10)
+      ["dumi||baike"]=>
+      int(27)
+      ["rda||telephone"]=>
+      int(40)
+      ["dumi||ai.dueros.video_call"]=>
+      int(30)
+      ["dumi||calculator"]=>
+      int(30)
+      ["rda"]=>
+      int(60)
+      ["rus||customer_service_phone_number"]=>
+      int(66)
+      ["rus||car_price"]=>
+      int(67)
+      ["dumi||kg"]=>
+      int(27)
+      ["dumi||sound_program"]=>
+      int(67)
+      ["dumi||app"]=>
+      int(67)
+      ["dumi||music"]=>
+      int(67)
+      ["rus||audio.joke.play"]=>
+      int(68)
+      ["dumi"]=>
+      int(70)
+      ["rda||codriver"]=>
+      int(76)
+      ["rda||player"]=>
+      int(76)
+      ["dumi||codriver"]=>
+      int(77)
+      ["dumi||player"]=>
+      int(77)
+      ["dumi||navigate_instruction"]=>
+      int(77)
+      ["rus||new_measurement"]=>
+      int(78)
+      ["rus||tongue_twister"]=>
+      int(78)
+      ["rda||radio"]=>
+      int(79)
+      ["unit"]=>
+      int(80)
+      ["rda||isCommand"]=>
+      int(90)
+      ["iov_parser||codriver||high"]=>
+      float(90.1)
+      ["iov_parser||app||high"]=>
+      float(90.1)
+      ["iov_parser||contacts||high"]=>
+      float(90.1)
+      ["iov_parser||music||high"]=>
+      float(90.1)
+      ["iov_parser||navigate_instruction||high"]=>
+      float(90.2)
+      ["iov_parser||player||high"]=>
+      float(90.1)
+      ["rda_filter"]=>
+      int(98)
+      ["dumi||ui_control"]=>
+      int(99)
+      ["dumi||film_ticket_buyer"]=>
+      int(99)
+      ["dumi||idiom_chain"]=>
+      int(99)
+      ["vodp"]=>
+      int(1000)
+      ["vodpv2"]=>
+      int(10000)
+      ["unit||bwcdemo2018_ktv"]=>
+      int(100000)
+      ["unit||bwcdemo2018_rest"]=>
+      int(100000)
+      ["unit||bwcdemo2018_feedback"]=>
+      int(100000)
+      ["unit||bwcdemo2018_movie"]=>
+      int(100000)
+      ["unit||bwcdemo2018_game"]=>
+      int(100000)
+      ["unit||bwcdemo2018_ask_location"]=>
+      int(100000)
+      ["unit||bwcdemo2018_kia_faq"]=>
+      int(100000)
+      ["unit||bwcdemo2018_kia_carspa"]=>
+      int(100000)
+      ["unit||bwcdemo2018_kia_food"]=>
+      int(100000)
+      ["unit||bwcdemo2018_kia_navi"]=>
+      int(100000)
+      ["unit||bwcdemo2018_kia_game"]=>
+      int(100000)
+      ["ugc_pool"]=>
+      int(6)
+      ["unit||aiapps"]=>
+      int(66)
+      ["unitbot||map"]=>
+      int(69)
+      ["unitbot||navigate_instruction"]=>
+      float(90.5)
+      ["unit||talk_service"]=>
+      float(1.1)
+      ["unitbot||passing_point"]=>
+      float(70.1)
+      ["unitbot||traffic_condition"]=>
+      int(76)
+      ["iov_parser||radio||high"]=>
+      float(90.1)
+      ["rda||navigate_instruction"]=>
+      int(70)
+      ["iov_parser||sound_program||high"]=>
+      float(90.2)
+      ["iov_parser||sensitive_word"]=>
+      float(26.5)
+      ["unit||emotion_handler"]=>
+      int(29)
+      ["dumi||image_search"]=>
+      int(24)
+      ["dumi||dumi_doudi"]=>
+      int(19)
+      ["iov_parser||entity"]=>
+      float(5.5)
+      ["dumi||map"]=>
+      int(68)
+      ["unit||hotel"]=>
+      int(100)
+      ["unit||bktv"]=>
+      int(101)
+      ["iov_parser||custom||entity"]=>
+      float(5.5)
+      ["iov_parser||sensitive||sensitive_word"]=>
+      float(26.5)
+      ["iov_parser||radio||radio"]=>
+      float(90.1)
+      ["iov_parser||command||codriver"]=>
+      float(90.1)
+      ["iov_parser||carlifebot||codriver"]=>
+      float(90.3)
+      ["iov_parser||command||player"]=>
+      float(90.1)
+      ["iov_parser||command||app"]=>
+      float(90.1)
+      ["iov_parser||carlifebot||app"]=>
+      float(90.3)
+      ["iov_parser||navigate||navigate_instruction"]=>
+      float(90.2)
+      ["iov_parser||music||music"]=>
+      float(90.1)
+      ["iov_parser||command||contacts"]=>
+      float(90.1)
+      ["unit||66484||talk_service"]=>
+      float(1.1)
+      ["unit||35394"]=>
+      float(4.5)
+      ["unit||34829||hint"]=>
+      int(28)
+      ["unit||59086||emotion_handler"]=>
+      int(29)
+      ["unit||43785||aiapps"]=>
+      int(66)
+      ["unitbot||44983||map"]=>
+      int(69)
+      ["unitbot||44983||passing_point"]=>
+      float(70.1)
+      ["unitbot||44983||traffic_condition"]=>
+      int(76)
+      ["unitbot||44983||navigate_instruction"]=>
+      float(90.5)
+      ["unit||1743||hotel"]=>
+      int(100)
+      ["unit||71244||bktv"]=>
+      int(101)
+      ["useoldversion"]=>
+      int(2)
+      ["unit||navigate_instruction"]=>
+      int(91)
+      ["iov_parser||sgmAc||codriver"]=>
+      int(91)
+      ["unit||app"]=>
+      int(91)
+      ["iov_parser||rear_mirror"]=>
+      float(98.1)
+      ["dumi||dumi_us_fallback"]=>
+      float(0.9)
+      ["dumi||kg||knowledge_graph_speciality"]=>
+      int(70)
+      ["dumi||kg||knowledge_graph_poetry"]=>
+      int(70)
+      ["iov_parser||venucia532||navigate_instruction"]=>
+      int(91)
+      ["unit||43147||map"]=>
+      int(69)
+      ["unit||sgm_info36_emanual2"]=>
+      int(91)
+      ["iov_parser||toyota_highlander||codriver"]=>
+      int(91)
+      ["unit||43147||passing_point"]=>
+      float(70.1)
+      ["unit||43147||traffic_condition"]=>
+      float(70.1)
+      ["iov_parser||ford_phase4||codriver"]=>
+      int(91)
+      ["iov_parser||ford_phase4||player"]=>
+      int(91)
+      ["iov_parser||ford_phase4||app"]=>
+      int(91)
+      ["iov_parser||car_condition||high"]=>
+      float(90.1)
+      ["iov_parser||ford_phase4||radio"]=>
+      int(91)
+    }
+    ["nav_bot_session"]=>
+    string(8) "b2e8abb4"
+    ["dumi_session_list"]=>
+    array(1) {
+      [0]=>
+      string(33) "{"bot_id":"","bot_session_id":""}"
+    }
+  }
+}
+1111111111111111
+array(5) {
+  ["usid"]=>
+  string(19) "iov-nlu-us-classify"
+  ["logid"]=>
+  string(10) "1609167681"
+  ["query"]=>
+  string(0) ""
+  ["uuid"]=>
+  string(0) ""
+  ["arrinput"]=>
+  array(40) {
+    ["BDUSS"]=>
+    string(4) "qwqw"
+    ["ak"]=>
+    string(10) "venucia534"
+    ["av"]=>
+    string(2) "10"
+    ["cn"]=>
+    string(9) "300000000"
+    ["coordtype"]=>
+    string(1) "2"
+    ["crd"]=>
+    string(20) "113.948913_22.530194"
+    ["uuid"]=>
+    string(17) "dumi_test_iov_897"
+    ["word"]=>
+    string(27) "车漆封釉作用有哪些"
+    ["dumi_appid"]=>
+    string(18) "dm0C4FD4987BC43061"
+    ["dumi_appkey"]=>
+    string(32) "11AB249BD3BECCE982D26DD2DB802E33"
+    ["need_auth_av"]=>
+    int(15)
+    ["view_av"]=>
+    int(10)
+    ["use_lexer_word"]=>
+    bool(true)
+    ["hint_bot_confidence"]=>
+    int(27)
+    ["need_music_resource"]=>
+    bool(true)
+    ["music_qq"]=>
+    bool(true)
+    ["need_audio_resource"]=>
+    bool(true)
+    ["MultiLanguage"]=>
+    string(13) "["cantonese"]"
+    ["film_ticket_buyer_no_multi"]=>
+    bool(true)
+    ["wake_up_word"]=>
+    string(12) "你好小辰"
+    ["need_toplist_search"]=>
+    bool(true)
+    ["audio_ximalaya"]=>
+    bool(true)
+    ["news_leting"]=>
+    bool(true)
+    ["keylist"]=>
+    array(8) {
+      [0]=>
+      string(9) "view_av::"
+      [1]=>
+      string(16) "use_lexer_word::"
+      [2]=>
+      string(21) "hint_bot_confidence::"
+      [3]=>
+      string(21) "need_music_resource::"
+      [4]=>
+      string(21) "need_audio_resource::"
+      [5]=>
+      string(15) "MultiLanguage::"
+      [6]=>
+      string(28) "film_ticket_buyer_no_multi::"
+      [7]=>
+      string(21) "need_toplist_search::"
+    }
+    ["deviceuserid"]=>
+    NULL
+    ["c"]=>
+    string(1) "a"
+    ["address_info"]=>
+    array(0) {
+    }
+    ["clientip"]=>
+    string(14) "172.18.190.100"
+    ["origin_word"]=>
+    string(27) "车漆封釉作用有哪些"
+    ["unit_bot_list"]=>
+    array(19) {
+      [43024]=>
+      array(8) {
+        ["iov_bot_id"]=>
+        string(3) "188"
+        ["card_type"]=>
+        string(8) "iovmusic"
+        ["source"]=>
+        string(1) "6"
+        ["status"]=>
+        string(1) "1"
+        ["source_name"]=>
+        string(5) "43024"
+        ["bot_name"]=>
+        string(9) "IOV_MUSIC"
+        ["handler"]=>
+        string(0) ""
+        ["scenes_type"]=>
+        NULL
+      }
+      [34829]=>
+      array(8) {
+        ["iov_bot_id"]=>
+        string(3) "116"
+        ["card_type"]=>
+        string(4) "hint"
+        ["source"]=>
+        string(1) "6"
+        ["status"]=>
+        string(1) "1"
+        ["source_name"]=>
+        string(5) "34829"
+        ["bot_name"]=>
+        string(4) "hint"
+        ["handler"]=>
+        string(28) "Service_Data_Unit_Scene_Hint"
+        ["scenes_type"]=>
+        NULL
+      }
+      [59225]=>
+      array(8) {
+        ["iov_bot_id"]=>
+        string(3) "234"
+        ["card_type"]=>
+        string(13) "voice_control"
+        ["source"]=>
+        string(1) "6"
+        ["status"]=>
+        string(1) "1"
+        ["source_name"]=>
+        string(5) "59225"
+        ["bot_name"]=>
+        string(12) "发音控制"
+        ["handler"]=>
+        string(0) ""
+        ["scenes_type"]=>
+        NULL
+      }
+      [57971]=>
+      array(8) {
+        ["iov_bot_id"]=>
+        string(3) "232"
+        ["card_type"]=>
+        string(19) "ven_electronic_book"
+        ["source"]=>
+        string(1) "6"
+        ["status"]=>
+        string(1) "1"
+        ["source_name"]=>
+        string(5) "57971"
+        ["bot_name"]=>
+        string(18) "启辰电子手册"
+        ["handler"]=>
+        string(27) "Service_Data_Unit_Scene_Faq"
+        ["scenes_type"]=>
+        NULL
+      }
+      [7467]=>
+      array(8) {
+        ["iov_bot_id"]=>
+        string(2) "57"
+        ["card_type"]=>
+        string(9) "multi_map"
+        ["source"]=>
+        string(1) "6"
+        ["status"]=>
+        string(1) "1"
+        ["source_name"]=>
+        string(4) "7467"
+        ["bot_name"]=>
+        string(18) "多途径点导航"
+        ["handler"]=>
+        string(28) "Service_Data_Unit_Navigation"
+        ["scenes_type"]=>
+        NULL
+      }
+      [43785]=>
+      array(8) {
+        ["iov_bot_id"]=>
+        string(3) "189"
+        ["card_type"]=>
+        string(6) "aiapps"
+        ["source"]=>
+        string(1) "6"
+        ["status"]=>
+        string(1) "1"
+        ["source_name"]=>
+        string(5) "43785"
+        ["bot_name"]=>
+        string(9) "小程序"
+        ["handler"]=>
+        string(0) ""
+        ["scenes_type"]=>
+        NULL
+      }
+      [200016]=>
+      array(8) {
+        ["iov_bot_id"]=>
+        string(3) "128"
+        ["card_type"]=>
+        string(3) "app"
+        ["source"]=>
+        string(1) "8"
+        ["status"]=>
+        string(1) "1"
+        ["source_name"]=>
+        string(6) "200016"
+        ["bot_name"]=>
+        string(32) "控制指令:应用控制-中文"
+        ["handler"]=>
+        string(0) ""
+        ["scenes_type"]=>
+        NULL
+      }
+      [200015]=>
+      array(8) {
+        ["iov_bot_id"]=>
+        string(3) "108"
+        ["card_type"]=>
+        string(8) "codriver"
+        ["source"]=>
+        string(1) "8"
+        ["status"]=>
+        string(1) "1"
+        ["source_name"]=>
+        string(6) "200015"
+        ["bot_name"]=>
+        string(32) "控制指令:通用控制-中文"
+        ["handler"]=>
+        string(0) ""
+        ["scenes_type"]=>
+        NULL
+      }
+      [47200]=>
+      array(8) {
+        ["iov_bot_id"]=>
+        string(3) "211"
+        ["card_type"]=>
+        string(16) "scheduleReminder"
+        ["source"]=>
+        string(1) "6"
+        ["status"]=>
+        string(1) "1"
+        ["source_name"]=>
+        string(5) "47200"
+        ["bot_name"]=>
+        string(14) "日程管理v2"
+        ["handler"]=>
+        string(0) ""
+        ["scenes_type"]=>
+        NULL
+      }
+      [50096]=>
+      array(8) {
+        ["iov_bot_id"]=>
+        string(3) "218"
+        ["card_type"]=>
+        string(12) "train_ticket"
+        ["source"]=>
+        string(1) "6"
+        ["status"]=>
+        string(1) "1"
+        ["source_name"]=>
+        string(5) "50096"
+        ["bot_name"]=>
+        string(15) "火车票查询"
+        ["handler"]=>
+        string(0) ""
+        ["scenes_type"]=>
+        NULL
+      }
+      [47382]=>
+      array(8) {
+        ["iov_bot_id"]=>
+        string(2) "19"
+        ["card_type"]=>
+        string(9) "telephone"
+        ["source"]=>
+        string(1) "6"
+        ["status"]=>
+        string(1) "1"
+        ["source_name"]=>
+        string(5) "47382"
+        ["bot_name"]=>
+        string(12) "电话多轮"
+        ["handler"]=>
+        string(0) ""
+        ["scenes_type"]=>
+        NULL
+      }
+      [88544]=>
+      array(8) {
+        ["iov_bot_id"]=>
+        string(3) "289"
+        ["card_type"]=>
+        string(15) "audio.joke.play"
+        ["source"]=>
+        string(1) "6"
+        ["status"]=>
+        string(1) "1"
+        ["source_name"]=>
+        string(5) "88544"
+        ["bot_name"]=>
+        string(6) "笑话"
+        ["handler"]=>
+        string(0) ""
+        ["scenes_type"]=>
+        NULL
+      }
+      [88524]=>
+      array(8) {
+        ["iov_bot_id"]=>
+        string(3) "288"
+        ["card_type"]=>
+        string(14) "tongue_twister"
+        ["source"]=>
+        string(1) "6"
+        ["status"]=>
+        string(1) "1"
+        ["source_name"]=>
+        string(5) "88524"
+        ["bot_name"]=>
+        string(25) "绕口令unit平台自研"
+        ["handler"]=>
+        string(0) ""
+        ["scenes_type"]=>
+        NULL
+      }
+      [17493]=>
+      array(8) {
+        ["iov_bot_id"]=>
+        string(2) "92"
+        ["card_type"]=>
+        string(13) "custom_wakeup"
+        ["source"]=>
+        string(1) "6"
+        ["status"]=>
+        string(1) "1"
+        ["source_name"]=>
+        string(5) "17493"
+        ["bot_name"]=>
+        string(18) "自定义唤醒词"
+        ["handler"]=>
+        string(30) "Service_Data_Unit_CustomWakeup"
+        ["scenes_type"]=>
+        NULL
+      }
+      [1743]=>
+      array(8) {
+        ["iov_bot_id"]=>
+        string(2) "59"
+        ["card_type"]=>
+        string(5) "hotel"
+        ["source"]=>
+        string(1) "6"
+        ["status"]=>
+        string(1) "1"
+        ["source_name"]=>
+        string(4) "1743"
+        ["bot_name"]=>
+        string(6) "酒店"
+        ["handler"]=>
+        string(23) "Service_Data_Unit_Hotel"
+        ["scenes_type"]=>
+        NULL
+      }
+      [63994]=>
+      array(8) {
+        ["iov_bot_id"]=>
+        string(3) "241"
+        ["card_type"]=>
+        string(12) "talk_service"
+        ["source"]=>
+        string(1) "6"
+        ["status"]=>
+        string(1) "1"
+        ["source_name"]=>
+        string(5) "63994"
+        ["bot_name"]=>
+        string(6) "闲聊"
+        ["handler"]=>
+        string(0) ""
+        ["scenes_type"]=>
+        NULL
+      }
+      [71244]=>
+      array(8) {
+        ["iov_bot_id"]=>
+        string(3) "247"
+        ["card_type"]=>
+        string(4) "bktv"
+        ["source"]=>
+        string(1) "6"
+        ["status"]=>
+        string(1) "1"
+        ["source_name"]=>
+        string(5) "71244"
+        ["bot_name"]=>
+        string(15) "项目ktv分支"
+        ["handler"]=>
+        string(0) ""
+        ["scenes_type"]=>
+        NULL
+      }
+      [27252]=>
+      array(8) {
+        ["iov_bot_id"]=>
+        string(3) "238"
+        ["card_type"]=>
+        string(11) "planeticket"
+        ["source"]=>
+        string(1) "6"
+        ["status"]=>
+        string(1) "1"
+        ["source_name"]=>
+        string(5) "27252"
+        ["bot_name"]=>
+        string(15) "飞机票查询"
+        ["handler"]=>
+        string(0) ""
+        ["scenes_type"]=>
+        NULL
+      }
+      [1028694]=>
+      array(8) {
+        ["iov_bot_id"]=>
+        string(3) "301"
+        ["card_type"]=>
+        string(26) "venucia534_electronic_book"
+        ["source"]=>
+        string(1) "6"
+        ["status"]=>
+        string(1) "1"
+        ["source_name"]=>
+        string(7) "1028694"
+        ["bot_name"]=>
+        string(21) "启辰534电子手册"
+        ["handler"]=>
+        string(27) "Service_Data_Unit_Scene_Faq"
+        ["scenes_type"]=>
+        NULL
+      }
+    }
+    ["iov_parser_service"]=>
+    array(4) {
+      [0]=>
+      string(10) "venucia534"
+      [1]=>
+      string(7) "command"
+      [2]=>
+      string(9) "sensitive"
+      [3]=>
+      string(8) "navigate"
+    }
+    ["iov_parser_slot_service"]=>
+    array(1) {
+      [0]=>
+      string(6) "custom"
+    }
+    ["available_bot_list"]=>
+    array(48) {
+      [0]=>
+      string(8) "iovmusic"
+      [1]=>
+      string(4) "hint"
+      [2]=>
+      string(13) "voice_control"
+      [3]=>
+      string(19) "ven_electronic_book"
+      [4]=>
+      string(9) "multi_map"
+      [5]=>
+      string(6) "aiapps"
+      [6]=>
+      string(16) "scheduleReminder"
+      [7]=>
+      string(12) "train_ticket"
+      [8]=>
+      string(9) "telephone"
+      [9]=>
+      string(15) "audio.joke.play"
+      [10]=>
+      string(6) "tongue"
+      [11]=>
+      string(14) "tongue_twister"
+      [12]=>
+      string(13) "custom_wakeup"
+      [13]=>
+      string(5) "hotel"
+      [14]=>
+      string(12) "talk_service"
+      [15]=>
+      string(4) "bktv"
+      [16]=>
+      string(11) "planeticket"
+      [17]=>
+      string(26) "venucia534_electronic_book"
+      [18]=>
+      string(10) "ui_control"
+      [19]=>
+      string(23) "shanghai_shenzhen_stock"
+      [20]=>
+      string(7) "parking"
+      [21]=>
+      string(12) "image_search"
+      [22]=>
+      string(12) "duer_weather"
+      [23]=>
+      string(3) "map"
+      [24]=>
+      string(5) "baike"
+      [25]=>
+      string(11) "idiom_chain"
+      [26]=>
+      string(20) "navigate_instruction"
+      [27]=>
+      string(6) "player"
+      [28]=>
+      string(3) "app"
+      [29]=>
+      string(8) "codriver"
+      [30]=>
+      string(6) "travel"
+      [31]=>
+      string(13) "sound_program"
+      [32]=>
+      string(14) "hongkong_stock"
+      [33]=>
+      string(13) "movie_satisfy"
+      [34]=>
+      string(17) "film_ticket_buyer"
+      [35]=>
+      string(2) "kg"
+      [36]=>
+      string(10) "sysprofile"
+      [37]=>
+      string(8) "us_stock"
+      [38]=>
+      string(10) "restaurant"
+      [39]=>
+      string(5) "stock"
+      [40]=>
+      string(6) "flight"
+      [41]=>
+      string(10) "calculator"
+      [42]=>
+      string(9) "smarthome"
+      [43]=>
+      string(9) "violation"
+      [44]=>
+      string(5) "music"
+      [45]=>
+      string(15) "new_measurement"
+      [46]=>
+      string(10) "venucia534"
+      [47]=>
+      string(7) "unknown"
+    }
+    ["needView"]=>
+    bool(true)
+    ["arrival_crd_arr"]=>
+    array(0) {
+    }
+    ["bot_session_list_public"]=>
+    array(17) {
+      [0]=>
+      string(40) "[{"bot_id":"43024","bot_session_id":""}]"
+      [1]=>
+      string(40) "[{"bot_id":"34829","bot_session_id":""}]"
+      [2]=>
+      string(40) "[{"bot_id":"59225","bot_session_id":""}]"
+      [3]=>
+      string(40) "[{"bot_id":"57971","bot_session_id":""}]"
+      [4]=>
+      string(39) "[{"bot_id":"7467","bot_session_id":""}]"
+      [5]=>
+      string(40) "[{"bot_id":"43785","bot_session_id":""}]"
+      [6]=>
+      string(40) "[{"bot_id":"47200","bot_session_id":""}]"
+      [7]=>
+      string(40) "[{"bot_id":"50096","bot_session_id":""}]"
+      [8]=>
+      string(40) "[{"bot_id":"47382","bot_session_id":""}]"
+      [9]=>
+      string(40) "[{"bot_id":"88544","bot_session_id":""}]"
+      [10]=>
+      string(40) "[{"bot_id":"88524","bot_session_id":""}]"
+      [11]=>
+      string(40) "[{"bot_id":"17493","bot_session_id":""}]"
+      [12]=>
+      string(39) "[{"bot_id":"1743","bot_session_id":""}]"
+      [13]=>
+      string(40) "[{"bot_id":"63994","bot_session_id":""}]"
+      [14]=>
+      string(40) "[{"bot_id":"71244","bot_session_id":""}]"
+      [15]=>
+      string(40) "[{"bot_id":"27252","bot_session_id":""}]"
+      [16]=>
+      string(82) "[{"bot_id":"1028694","bot_session_id":"session-1591777609401-35238225-8013-1031"}]"
+    }
+    ["bot_session_list_private"]=>
+    array(2) {
+      [0]=>
+      string(41) "[{"bot_id":"200016","bot_session_id":""}]"
+      [1]=>
+      string(41) "[{"bot_id":"200015","bot_session_id":""}]"
+    }
+    ["rank_score"]=>
+    array(114) {
+      ["rus||talk_service"]=>
+      int(1)
+      ["navi_classify"]=>
+      int(2)
+      ["dumi_similarity"]=>
+      int(3)
+      ["rda_similarity"]=>
+      int(4)
+      ["unit||hint"]=>
+      int(28)
+      ["unit||news_standby"]=>
+      float(4.5)
+      ["unit||audio_standby"]=>
+      float(4.5)
+      ["iov_parser"]=>
+      int(7)
+      ["rus"]=>
+      int(10)
+      ["dumi||baike"]=>
+      int(27)
+      ["rda||telephone"]=>
+      int(40)
+      ["dumi||ai.dueros.video_call"]=>
+      int(30)
+      ["dumi||calculator"]=>
+      int(30)
+      ["rda"]=>
+      int(60)
+      ["rus||customer_service_phone_number"]=>
+      int(66)
+      ["rus||car_price"]=>
+      int(67)
+      ["dumi||kg"]=>
+      int(27)
+      ["dumi||sound_program"]=>
+      int(67)
+      ["dumi||app"]=>
+      int(67)
+      ["dumi||music"]=>
+      int(67)
+      ["rus||audio.joke.play"]=>
+      int(68)
+      ["dumi"]=>
+      int(70)
+      ["rda||codriver"]=>
+      int(76)
+      ["rda||player"]=>
+      int(76)
+      ["dumi||codriver"]=>
+      int(77)
+      ["dumi||player"]=>
+      int(77)
+      ["dumi||navigate_instruction"]=>
+      int(77)
+      ["rus||new_measurement"]=>
+      int(78)
+      ["rus||tongue_twister"]=>
+      int(78)
+      ["rda||radio"]=>
+      int(79)
+      ["unit"]=>
+      int(80)
+      ["rda||isCommand"]=>
+      int(90)
+      ["iov_parser||codriver||high"]=>
+      float(90.1)
+      ["iov_parser||app||high"]=>
+      float(90.1)
+      ["iov_parser||contacts||high"]=>
+      float(90.1)
+      ["iov_parser||music||high"]=>
+      float(90.1)
+      ["iov_parser||navigate_instruction||high"]=>
+      float(90.2)
+      ["iov_parser||player||high"]=>
+      float(90.1)
+      ["rda_filter"]=>
+      int(98)
+      ["dumi||ui_control"]=>
+      int(99)
+      ["dumi||film_ticket_buyer"]=>
+      int(99)
+      ["dumi||idiom_chain"]=>
+      int(99)
+      ["vodp"]=>
+      int(1000)
+      ["vodpv2"]=>
+      int(10000)
+      ["unit||bwcdemo2018_ktv"]=>
+      int(100000)
+      ["unit||bwcdemo2018_rest"]=>
+      int(100000)
+      ["unit||bwcdemo2018_feedback"]=>
+      int(100000)
+      ["unit||bwcdemo2018_movie"]=>
+      int(100000)
+      ["unit||bwcdemo2018_game"]=>
+      int(100000)
+      ["unit||bwcdemo2018_ask_location"]=>
+      int(100000)
+      ["unit||bwcdemo2018_kia_faq"]=>
+      int(100000)
+      ["unit||bwcdemo2018_kia_carspa"]=>
+      int(100000)
+      ["unit||bwcdemo2018_kia_food"]=>
+      int(100000)
+      ["unit||bwcdemo2018_kia_navi"]=>
+      int(100000)
+      ["unit||bwcdemo2018_kia_game"]=>
+      int(100000)
+      ["ugc_pool"]=>
+      int(6)
+      ["unit||aiapps"]=>
+      int(66)
+      ["unitbot||map"]=>
+      int(69)
+      ["unitbot||navigate_instruction"]=>
+      float(90.5)
+      ["unit||talk_service"]=>
+      float(1.1)
+      ["unitbot||passing_point"]=>
+      float(70.1)
+      ["unitbot||traffic_condition"]=>
+      int(76)
+      ["iov_parser||radio||high"]=>
+      float(90.1)
+      ["rda||navigate_instruction"]=>
+      int(70)
+      ["iov_parser||sound_program||high"]=>
+      float(90.2)
+      ["iov_parser||sensitive_word"]=>
+      float(26.5)
+      ["unit||emotion_handler"]=>
+      int(29)
+      ["dumi||image_search"]=>
+      int(24)
+      ["dumi||dumi_doudi"]=>
+      int(19)
+      ["iov_parser||entity"]=>
+      float(5.5)
+      ["dumi||map"]=>
+      int(68)
+      ["unit||hotel"]=>
+      int(100)
+      ["unit||bktv"]=>
+      int(101)
+      ["iov_parser||custom||entity"]=>
+      float(5.5)
+      ["iov_parser||sensitive||sensitive_word"]=>
+      float(26.5)
+      ["iov_parser||radio||radio"]=>
+      float(90.1)
+      ["iov_parser||command||codriver"]=>
+      float(90.1)
+      ["iov_parser||carlifebot||codriver"]=>
+      float(90.3)
+      ["iov_parser||command||player"]=>
+      float(90.1)
+      ["iov_parser||command||app"]=>
+      float(90.1)
+      ["iov_parser||carlifebot||app"]=>
+      float(90.3)
+      ["iov_parser||navigate||navigate_instruction"]=>
+      float(90.2)
+      ["iov_parser||music||music"]=>
+      float(90.1)
+      ["iov_parser||command||contacts"]=>
+      float(90.1)
+      ["unit||66484||talk_service"]=>
+      float(1.1)
+      ["unit||35394"]=>
+      float(4.5)
+      ["unit||34829||hint"]=>
+      int(28)
+      ["unit||59086||emotion_handler"]=>
+      int(29)
+      ["unit||43785||aiapps"]=>
+      int(66)
+      ["unitbot||44983||map"]=>
+      int(69)
+      ["unitbot||44983||passing_point"]=>
+      float(70.1)
+      ["unitbot||44983||traffic_condition"]=>
+      int(76)
+      ["unitbot||44983||navigate_instruction"]=>
+      float(90.5)
+      ["unit||1743||hotel"]=>
+      int(100)
+      ["unit||71244||bktv"]=>
+      int(101)
+      ["useoldversion"]=>
+      int(2)
+      ["unit||navigate_instruction"]=>
+      int(91)
+      ["iov_parser||sgmAc||codriver"]=>
+      int(91)
+      ["unit||app"]=>
+      int(91)
+      ["iov_parser||rear_mirror"]=>
+      float(98.1)
+      ["dumi||dumi_us_fallback"]=>
+      float(0.9)
+      ["dumi||kg||knowledge_graph_speciality"]=>
+      int(70)
+      ["dumi||kg||knowledge_graph_poetry"]=>
+      int(70)
+      ["iov_parser||venucia532||navigate_instruction"]=>
+      int(91)
+      ["unit||43147||map"]=>
+      int(69)
+      ["unit||sgm_info36_emanual2"]=>
+      int(91)
+      ["iov_parser||toyota_highlander||codriver"]=>
+      int(91)
+      ["unit||43147||passing_point"]=>
+      float(70.1)
+      ["unit||43147||traffic_condition"]=>
+      float(70.1)
+      ["iov_parser||ford_phase4||codriver"]=>
+      int(91)
+      ["iov_parser||ford_phase4||player"]=>
+      int(91)
+      ["iov_parser||ford_phase4||app"]=>
+      int(91)
+      ["iov_parser||car_condition||high"]=>
+      float(90.1)
+      ["iov_parser||ford_phase4||radio"]=>
+      int(91)
+    }
+    ["nav_bot_session"]=>
+    string(8) "b2e8abb4"
+    ["dumi_session_list"]=>
+    array(1) {
+      [0]=>
+      string(33) "{"bot_id":"","bot_session_id":""}"
+    }
+  }
+}
+{"errno":0,"raw_text":"\u8f66\u6f06\u5c01\u91c9\u4f5c\u7528\u6709\u54ea\u4e9b","result":[{"card_type":"unknown","intent":"unknown","tts_status":{"tts":"\u6211\u6682\u65f6\u8fd8\u6ca1\u6709\u5b66\u4e60\u8fd9\u4e2a\u77e5\u8bc6"},"data":{}}],"data_resource":8,"logid":"1609167681","spend_time":"1322ms","uuid":"dumi_test_iov_897","time":1591777610}
+

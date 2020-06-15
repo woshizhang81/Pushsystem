@@ -10,7 +10,7 @@ import (
 
 type  SessionByIp struct {
 	DeviceId 		string 			//注册帧 解析时填充
-	deviceType 	DeviceIdType
+	DeviceType 	DeviceIdType
 	//Idc			 	uint16
 	Qps				int		  //qps
 	LastFrameCount	uint32    //上次汇聚周期的帧数
@@ -45,7 +45,7 @@ type SessionManagerByIp struct{
 /*
 	addr IP:port
 */
-func (handle * SessionManagerByIp) Add (addr string,session SessionByIp) {
+func (handle * SessionManagerByIp) Add (addr string,session * SessionByIp) {
 	hashcode := utils.HasCode(addr)
 	slot := hashcode % _const.GateWaySlotNum
 	handle.syncMapArray[slot].Store(addr,session)

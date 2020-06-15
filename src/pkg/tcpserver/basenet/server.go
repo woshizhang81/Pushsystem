@@ -98,7 +98,12 @@ func (server *NetServer ) Create (ipAddr string, port uint16) bool {
 }
 
 func (server *NetServer)Send (conn net.Conn, buf []byte){
-
+	num ,err := conn.Write(buf)
+	if err != nil {
+		fmt.Println("发送了长度为", num, "的数据" )
+	}else {
+		fmt.Println("发送失败错误为:", err.Error())
+	}
 }
 
 func (server *NetServer) ShutDown(){

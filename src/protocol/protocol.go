@@ -15,6 +15,8 @@ type BodyData interface { //统一为PB格式
 
 /*协议固定场景经过的 节点信息*/
 type TransHead struct {
+	DeviceID   	[50]byte //客户端移动端的唯一ID
+	DeviceType  uint8  	 //为兼容多种终端唯一标识
 	ModID     	uint16   //支持最大65535 个应用
 	ModSerID  	[32]byte //网关服务器地址  md5 字符串 兼容ip6  v4(v6) md5([ip:port])
 	ModSerIDC  	uint16   //网关代表机房
@@ -22,13 +24,15 @@ type TransHead struct {
 	GateWayIDC  uint16   //网关代表机房
 	ManagerID  	[32]byte //解析服务器地址
 	ManagerIDC  uint16   //解析服务器机房
-	DeviceID   	[50]byte //客户端移动端的唯一ID
-	DeviceType  uint8  	 //为兼容多种终端唯一标识
 	ClientAddr 	[50]byte //客户终端端的ip 兼容ip6  v4(v6) [ip:port] 模式
 }
 
 func (transHead * TransHead) UnPackage(buf []byte) {
 	index := uint16(0)
+	copy(transHead.DeviceID[:] ,buf[index:])//[32]byte //网关服务器地址  md5 字符串 兼容ip6 v4(v6) md5([ip:port])
+	index = index + 50
+	transHead.DeviceType  = buf[index]  //uint8  	 //为兼容多种终端唯一标识
+	index ++
 	transHead.ModID     	= binary.BigEndian.Uint16(buf[index:])//uint16   //支持最大65535 个应用
 	index = index + 2
 	copy(transHead.ModSerID[:] ,buf[index:])//[32]byte //网关服务器地址  md5 字符串 兼容ip6 v4(v6) md5([ip:port])
@@ -43,10 +47,7 @@ func (transHead * TransHead) UnPackage(buf []byte) {
 	index = index + 32
 	transHead.ManagerIDC	= binary.BigEndian.Uint16(buf[index:])//uint16   //网关代表机房
 	index = index + 2
-	copy(transHead.DeviceID[:] ,buf[index:])//[32]byte //网关服务器地址  md5 字符串 兼容ip6 v4(v6) md5([ip:port])
-	index = index + 50
-	transHead.DeviceType  = buf[index]  //uint8  	 //为兼容多种终端唯一标识
-	index ++
+
 	copy(transHead.ClientAddr[:] ,buf[index:])//[32]byte //网关服务器地址  md5 字符串 兼容ip6 v4(v6) md5([ip:port])
 	index = index +50
 	if index != 205 {
@@ -61,6 +62,11 @@ func (transHead * TransHead) Package() []byte{
 	var buf [205]byte  //固定长度205 头部
 
 	tlen := uint8(0)
+	copy(buf[tlen:] ,transHead.DeviceID[:])
+	tlen = tlen + 50
+	buf[tlen] = transHead.DeviceType
+	tlen ++
+
 	binary.BigEndian.PutUint16(buf[tlen:] , transHead.ModID)
 	tlen = tlen + 2
 	copy(buf[tlen:] ,transHead.ModSerID[:])
@@ -76,10 +82,7 @@ func (transHead * TransHead) Package() []byte{
 	tlen = tlen + 32
 	binary.BigEndian.PutUint16(buf[tlen:],transHead.ManagerIDC)
 	tlen = tlen + 2
-	copy(buf[tlen:] ,transHead.DeviceID[:])
-	tlen = tlen + 50
-	buf[tlen] = transHead.DeviceType
-	tlen ++
+
 	copy(buf[tlen:] , transHead.ClientAddr[:])
 	tlen = tlen +50
 	return buf[:]
