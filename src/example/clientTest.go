@@ -10,8 +10,7 @@ import (
 )
 
 func main(){
-	client := &tcpclient.BaseClient{}
-	client.Initial()
+	client := &tcpclient.TcpClient{}
 	client.Start("127.0.0.1:8080")
 
 	ch := make(chan os.Signal)
