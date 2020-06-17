@@ -1,5 +1,9 @@
 package _const
 
+const CommonServerIDSize = 32  //通用服务ID长度
+const NetNodeAddrSize = 50     //网络节点 网络地址 长度     ip4(6):port
+const DeviceIDSize = 50        //设备ID的长度
+
 const RecieveBufLimit = 1305
 const GateWaySlotNum = 500   // slot 个数
 const GateWayFrontHbDur = 10 // 前端心跳间隔

@@ -2,7 +2,6 @@ package frontend
 
 import (
 	"sync"
-	"Pushsystem/src/pkg/tcpclient"
 	"Pushsystem/src/const"
 	timer2 "Pushsystem/src/utils/timer"
 	"time"
@@ -24,26 +23,6 @@ import (
 		4> 需要满足按 deviceid 和 devicetype 选择发送到gateway的 链接的功能
 */
 
-type Link struct{
-	client 	*tcpclient.TcpClient
-	Timer	*timer2.CronTimer
-}
-
-func (link * Link) CreateTimer(hbdur ,  hbcheck int32) bool {
-	link.CreateTimer(_const.ClientHeartBeatDur, _const.ClientHeartBeatCheckDur)
-	//开启定时器 30s心跳检测回调
-	link.Timer = &timer2.CronTimer{}
-	link.Timer.Start()
-	link.Timer.Add(HeartBeatSend,link, nil , hbdur)
-	link.Timer.Add(HeartBeatCheck,link, nil , hbcheck)
-	return true
-}
-
-func (link * Link) StopTimer() bool {
-	//开启定时器 30s心跳检测回调
-	link.Timer.Stop()
-	return true
-}
 // 发送心跳帧
 func HeartBeatSend (handle interface{}, id int , param interface{}) {
 	//fmt.Println("HeartBeatSend",time.Now().Second())
@@ -56,13 +35,13 @@ func HeartBeatSend (handle interface{}, id int , param interface{}) {
 // 心跳检查定时器
 func HeartBeatCheck(handle interface{}, id int , param interface{}) {
 	//fmt.Println("HeartBeatCheck",time.Now().Second())
-	link  := handle.(* Link)
+	vserver  := handle.(* Link)
 	curTimeCount := time.Now().Unix()
-	if 	link.client.LastHeartBeatCount != 0 && curTimeCount - link.client.LastHeartBeatCount > _const.ClientHeartBeatCheckDur {
+	if 	vserver.Client.LastHeartBeatCount != 0 && curTimeCount - vserver.Client.LastHeartBeatCount > _const.ClientHeartBeatCheckDur {
 		// 未检测到心跳断开了 此时应该重连
-		if link.client.ReStart() {
-			link.client.RestartCount ++
-			if link.client.RestartCount >= _const.ClientRestartTolerantTimes { //连续重启3次失败
+		if vserver.Client.ReStart() {
+			vserver.Client.RestartCount ++
+			if vserver.Client.RestartCount >= _const.ClientRestartTolerantTimes { //连续重启3次失败
 				fmt.Println("连续3次重启失败.... 应该是服务端 关闭了")
 				os.Exit(1)
 			}
@@ -73,8 +52,50 @@ func HeartBeatCheck(handle interface{}, id int , param interface{}) {
 
 
 type VirtualServer struct {
-	LinksMap sync.Map	//链接映射表  UniqueID 和 对应gateway 链接的关系
+	LocalAddr	[_const.NetNodeAddrSize]byte	//本地服务的网路地址
+	ManagerID   [_const.CommonServerIDSize]byte	//解析服务器唯一ID
+	ManagerIDC   uint16		//解析服务的机房
+	LinksMap 	sync.Map	//链接映射表  UniqueID 和 对应gateway 链接的关系
+	Timer		*timer2.CronTimer  //定时器
 
+
+}
+
+
+func (vserver * VirtualServer) Initial() {
+	// 读相关 配置文件 填充ManagerID ManagerIDC
+	// 初始化kafka客户端
+	vserver.Timer = &timer2.CronTimer{}
+}
+
+func (vserver * VirtualServer) UnInitial() {
+
+}
+
+func (vserver * VirtualServer) Start() {
+	vserver.Timer.Start()
+}
+
+func (vserver * VirtualServer) Stop() {
+	vserver.Timer.Stop()
+}
+
+
+
+func (vserver * VirtualServer) CreateTimer(hbdur ,  hbcheck int32) bool {
+	//vserver.CreateTimer(_const.ClientHeartBeatDur, _const.ClientHeartBeatCheckDur)
+	//开启定时器 30s心跳检测回调
+	vserver.Timer = &timer2.CronTimer{}
+	vserver.Timer.Start()
+	vserver.Timer.Add(HeartBeatSend,vserver, nil , hbdur)
+	vserver.Timer.Add(HeartBeatCheck,vserver, nil , hbcheck)
+	return true
+}
+
+func (vserver * VirtualServer) StopTimer() bool {
+	//开启定时器 30s心跳检测回调
+	vserver.Timer.Stop()
+	return true
 }
 
 

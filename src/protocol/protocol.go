@@ -5,6 +5,7 @@ import (
 	"encoding/binary"
 	"os"
 	"fmt"
+	"Pushsystem/src/const"
 )
 const BufDefaultSize = 2048
 
@@ -15,16 +16,16 @@ type BodyData interface { //统一为PB格式
 
 /*协议固定场景经过的 节点信息*/
 type TransHead struct {
-	DeviceID   	[50]byte //客户端移动端的唯一ID
+	DeviceID   	[_const.DeviceIDSize]byte //客户端移动端的唯一ID
 	DeviceType  uint8  	 //为兼容多种终端唯一标识
 	ModID     	uint16   //支持最大65535 个应用
-	ModSerID  	[32]byte //网关服务器地址  md5 字符串 兼容ip6  v4(v6) md5([ip:port])
+	ModSerID  	[_const.CommonServerIDSize]byte //网关服务器地址  md5 字符串 兼容ip6  v4(v6) md5([ip:port])
 	ModSerIDC  	uint16   //网关代表机房
-	GateWayID  	[32]byte //网关服务器地址
+	GateWayID  	[_const.CommonServerIDSize]byte //网关服务器地址
 	GateWayIDC  uint16   //网关代表机房
-	ManagerID  	[32]byte //解析服务器地址
+	ManagerID  	[_const.CommonServerIDSize]byte //解析服务器地址
 	ManagerIDC  uint16   //解析服务器机房
-	ClientAddr 	[50]byte //客户终端端的ip 兼容ip6  v4(v6) [ip:port] 模式
+	ClientAddr 	[_const.NetNodeAddrSize] byte //客户终端端的ip 兼容ip6  v4(v6) [ip:port] 模式
 }
 
 func (transHead * TransHead) UnPackage(buf []byte) {
