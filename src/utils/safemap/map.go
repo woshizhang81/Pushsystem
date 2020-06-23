@@ -18,6 +18,7 @@ type SafeMap struct {
 func (this *SafeMap) GetSuccessHook(arg interface{}) bool{
 	return true
 }
+
 func (this *SafeMap) SetSuccessHook(arg interface{}) bool{
 	return true
 }

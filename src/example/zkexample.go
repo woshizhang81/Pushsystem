@@ -37,9 +37,9 @@ func ZKOperateTest() {
 	var acls = zk.WorldACL(zk.PermAll)
 
 	// create
-	p, err_create := conn.Create(path, data, flags, acls)
-	if err_create != nil {
-		fmt.Println(err_create)
+	p, errCreate := conn.Create(path, data, flags, acls)
+	if errCreate != nil {
+		fmt.Println(errCreate)
 		return
 	}
 	fmt.Println("created:", p)
@@ -120,8 +120,8 @@ func ZKOperateWatchTest() {
 	fmt.Printf("ZKOperateWatchTest\n")
 
 	option := zk.WithEventCallback(callback)
-	var hosts = []string{"localhost:2181"}
-	conn, _, err := zk.Connect(hosts, time.Second*5, option)
+	var hosts = []string{"centos-pc1:2181","centos-pc2:2181","centos-pc3:2181"}
+	conn, _, err := zk.Connect(hosts, time.Second * 5, option)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -142,9 +142,9 @@ func ZKOperateWatchTest() {
 
 	// try create
 	var acls = zk.WorldACL(zk.PermAll)
-	p, err_create := conn.Create(path1, data1, zk.FlagEphemeral, acls)
-	if err_create != nil {
-		fmt.Println(err_create)
+	p, errCreate := conn.Create(path1, data1, zk.FlagEphemeral, acls)
+	if errCreate != nil {
+		fmt.Println(errCreate)
 		return
 	}
 	fmt.Printf("created path[%s]\n", p)
@@ -177,10 +177,11 @@ func ZKOperateWatchTest() {
 ///////
 //3. Watch children
 
+//ZkChildWatchTest
 func ZkChildWatchTest() {
 	fmt.Printf("ZkChildWatchTest")
 
-	var hosts = []string{"localhost:2181"}
+	var hosts = []string{"centos-pc1:2181","centos-pc2:2181","centos-pc3:2181"}
 	conn, _, err := zk.Connect(hosts, time.Second*5)
 	if err != nil {
 		fmt.Println(err)
@@ -189,19 +190,19 @@ func ZkChildWatchTest() {
 	defer conn.Close()
 
 	// try create root path
-	var root_path = "/test_root"
+	var rootPath = "/test_root"
 
 	// check root path exist
-	exist, _, err := conn.Exists(root_path)
+	exist, _, err := conn.Exists(rootPath)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 
 	if !exist {
-		fmt.Printf("try create root path: %s\n", root_path)
+		fmt.Printf("try create root path: %s\n", rootPath)
 		var acls = zk.WorldACL(zk.PermAll)
-		p, err := conn.Create(root_path, []byte("root_value"), 0, acls)
+		p, err := conn.Create(rootPath, []byte("root_value"), 0, acls)
 		if err != nil {
 			fmt.Println(err)
 			return
@@ -210,10 +211,10 @@ func ZkChildWatchTest() {
 	}
 
 	// try create child node
-	cur_time := time.Now().Unix()
-	ch_path := fmt.Sprintf("%s/ch_%d", root_path, cur_time)
+	curTime := time.Now().Unix()
+	chPath := fmt.Sprintf("%s/ch_%d", rootPath, curTime)
 	var acls = zk.WorldACL(zk.PermAll)
-	p, err := conn.Create(ch_path, []byte("ch_value"), zk.FlagEphemeral, acls)
+	p, err := conn.Create(chPath, []byte("ch_value"), zk.FlagEphemeral, acls)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -221,13 +222,13 @@ func ZkChildWatchTest() {
 	fmt.Printf("ch_path: %s create\n", p)
 
 	// watch the child events
-	children, s, child_ch, err := conn.ChildrenW(root_path)
+	children, s, childCh, err := conn.ChildrenW(rootPath)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 
-	fmt.Printf("root_path[%s] child_count[%d]\n", root_path, len(children))
+	fmt.Printf("root_path[%s] child_count[%d]\n", rootPath, len(children))
 	for idx, ch := range children {
 		fmt.Printf("%d, %s\n", idx, ch)
 	}
@@ -236,18 +237,18 @@ func ZkChildWatchTest() {
 
 	for {
 		select {
-		case ch_event := <-child_ch:
+		case chEvent := <-childCh:
 			{
-				fmt.Println("path:", ch_event.Path)
-				fmt.Println("type:", ch_event.Type.String())
-				fmt.Println("state:", ch_event.State.String())
+				fmt.Println("path:", chEvent.Path)
+				fmt.Println("type:", chEvent.Type.String())
+				fmt.Println("state:", chEvent.State.String())
 
-				if ch_event.Type == zk.EventNodeCreated {
-					fmt.Printf("has node[%s] detete\n", ch_event.Path)
-				} else if ch_event.Type == zk.EventNodeDeleted {
-					fmt.Printf("has new node[%d] create\n", ch_event.Path)
-				} else if ch_event.Type == zk.EventNodeDataChanged {
-					fmt.Printf("has node[%d] data changed", ch_event.Path)
+				if chEvent.Type == zk.EventNodeCreated {
+					fmt.Printf("has node[%s] detete\n", chEvent.Path)
+				} else if chEvent.Type == zk.EventNodeDeleted {
+					fmt.Printf("has new node[%d] create\n", chEvent.Path)
+				} else if chEvent.Type == zk.EventNodeDataChanged {
+					fmt.Printf("has node[%d] data changed", chEvent.Path)
 				}
 			}
 		}
@@ -258,5 +259,6 @@ func ZkChildWatchTest() {
 
 
 func main(){
-
+	//ZkChildWatchTest()
+	ZKOperateWatchTest()
 }

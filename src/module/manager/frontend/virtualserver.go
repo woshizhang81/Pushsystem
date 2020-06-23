@@ -1,6 +1,7 @@
 package frontend
 
 import (
+	"Pushsystem/src/pkg/tools/zkclient"
 	"sync"
 	"Pushsystem/src/const"
 	timer2 "Pushsystem/src/utils/timer"
@@ -57,7 +58,7 @@ type VirtualServer struct {
 	ManagerIDC   uint16		//解析服务的机房
 	LinksMap 	sync.Map	//链接映射表  UniqueID 和 对应gateway 链接的关系
 	Timer		*timer2.CronTimer  //定时器
-
+	ZkHandel 	zkclient.ZkClient
 
 }
 

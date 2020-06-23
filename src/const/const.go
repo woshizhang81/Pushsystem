@@ -31,3 +31,8 @@ const UpStreamMessageQueueCapity 	= 100000	   //十万个大小队列
 const ClientRestartTolerantTimes = 3  //重启容错次数
 const ClientHeartBeatCheckDur 	=    GateWayFrontHbDur  // 与端心跳间隔相同
 const ClientHeartBeatDur 	  	= 	 GateWayFrontHbDur - 5  // 比前端心跳间隔少5秒，考虑延迟情况
+
+
+const ZookeeperEventNumber = 3 		//zookeeper 每个路径可监控的事件为3个
+const ZookeeperNodeValueSize = 4*4096 		//zookeeper 每个节点最大数据量为4k
+const ZookeeperChildNodeSize = 100			//zookeeper 每个节点最大子结点数量

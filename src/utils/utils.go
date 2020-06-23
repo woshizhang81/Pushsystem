@@ -4,6 +4,7 @@ import (
 	"crypto/md5"
 	"fmt"
 	"hash/crc32"
+	"net"
 	"os"
 	"math/rand"
 	"time"
@@ -118,4 +119,39 @@ func DeleteValueFormSlice(slice []string, key string ) bool {
 		}
 	}
 	return false
+}
+
+//找出两个切片中不同的元素组成集合
+//todo:后面改成 通用性质的interface{} 性质
+func FindDifferentSlice(ele1 ,ele2 []string) []string {
+	len1 := len(ele1)
+	len2 := len(ele2)
+	var shortOne []string
+	var longOne  []string
+	var minLen int
+	var maxLen int
+	if len1 < len2 {
+		//todo:应该可以优化
+		shortOne,longOne = ele1[:],ele2[:]
+		minLen ,maxLen = len1,len2
+	}else {
+		shortOne,longOne = ele2[:],ele1[:]
+		minLen ,maxLen = len2,len1
+	}
+
+	tMap := make(map[string]bool) //将小的添加到map里
+	for i := 0; i < minLen; i++  {
+		key := shortOne[i]
+		tMap[key] = true
+	}
+	retArray := make([]string,0,maxLen)
+
+	for i := 0; i < maxLen	; i++  {
+		key := longOne[i]
+		if _, ok := tMap[key]; !ok {
+			//如果不存在 ,则添加到返回数组中
+			retArray = append(retArray, key)
+		}
+	}
+	return retArray
 }
