@@ -36,3 +36,9 @@ const ClientHeartBeatDur 	  	= 	 GateWayFrontHbDur - 5  // 比前端心跳间隔
 const ZookeeperEventNumber = 3 		//zookeeper 每个路径可监控的事件为3个
 const ZookeeperNodeValueSize = 4*4096 		//zookeeper 每个节点最大数据量为4k
 const ZookeeperChildNodeSize = 100			//zookeeper 每个节点最大子结点数量
+
+const (
+	ZkServerRootName  				= "/push_system"		//zk 根节点名称
+	ZkGateWayParentNodeName			= "/push_system/server_gatway"  //zk gateway 父节点名
+	ZkManagerParentNodeName			= "/push_system/server_manager" //zk manager 父节点名
+)

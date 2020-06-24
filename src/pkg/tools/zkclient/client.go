@@ -22,14 +22,13 @@ const(
 type OnPathCreated func (handle interface{},path string ,nodeValue []byte)                   //该节点被创建或者删除
 type OnPathDeleted func (handle interface{},path string)
 type OnPathContextChanged func (handle interface{}  , path string, latestPathValue []byte ,currentPathValue []byte)
-type OnPathChildNumChanged func (handle interface{} , path string, changeType uint8 , ChangedNode[]string) //
+type OnPathChildNumChanged func (handle interface{} , path string, changeType uint8 , ChangedNode string) //
 
 type ZkNodeEvents  struct {
 	wg *sync.WaitGroup
 	NodeName string 	//节点名称
 	Conn	*zk.Conn
 	OldNodeEventContext NodeEventContext    //最近一次的 该path的值的记录。采用值传递方式 , 次结构要作为sync.map value
-
 	CallBackHandle interface{} //回调句柄
 	CallBackPathCreated OnPathCreated
 	CallBackPathDeleted OnPathDeleted
@@ -125,10 +124,14 @@ func watchChildrenChanged(events * ZkNodeEvents ,Id uint8) {
 			diffChildArray  := utils.FindDifferentSlice(OldChildes,CurChildes)
 			if len(CurChildes) > len (OldChildes) {
 				//比原来增加了 找出
-				events.CallBackChildChanged(events.CallBackHandle,e.Path,ZKChildAdd,diffChildArray)
+				for i := 0;i< len(CurChildes) ; i++  {
+					events.CallBackChildChanged(events.CallBackHandle,e.Path,ZKChildAdd,diffChildArray[i])
+				}
 			}else if len(CurChildes) < len(OldChildes) {
 				//比软来减少了，找出减少的 childPath
-				events.CallBackChildChanged(events.CallBackHandle,e.Path,ZKChildDel,diffChildArray)
+				for i := 0;i< len(CurChildes) ; i++  {
+					events.CallBackChildChanged(events.CallBackHandle,e.Path,ZKChildDel,diffChildArray[i])
+				}
 			}else {
 				panic("this cannot happend")
 			}
@@ -139,6 +142,22 @@ func watchChildrenChanged(events * ZkNodeEvents ,Id uint8) {
 }
 
 func (events * ZkNodeEvents)Run(){
+	//先把对应的节点数据拿到
+	events.OldNodeEventContext.NodeName = events.NodeName
+	//获取该节点内容
+	value,_,err := events.Conn.Get(events.NodeName)
+	if err != nil {
+		panic("this cannot happend")
+	}
+	events.OldNodeEventContext.NodeContext= value
+	// 获取该节点的child列表
+	childs,_,errch := events.Conn.Children(events.NodeName)
+	if errch != nil {
+		panic("this cannot happend")
+	}
+	events.OldNodeEventContext.ChildNodeNames = childs
+
+	//创建监听事件回掉
 	events.wg = &sync.WaitGroup{}
 	go func(conn *zk.Conn) {
 		events.wg.Add(_const.ZookeeperEventNumber)
@@ -180,19 +199,24 @@ func (client * ZkClient) Start()  bool {
 	if err != nil {
 		return false
 	}
-	defer client.Conn.Close()
-	client.Conn = nil
 	return true
 }
 
 /*
 	添加该路径所有事件
 */
-func (client * ZkClient) AddPathEvents(path string) {
-	newNode := NewZkNodeEvents(path,client.Conn, client, CallBackPathCreated, CallBackPathDeleted,
+func (client * ZkClient) AddPathEvents(
+	Path string,
+	Handle 	interface{},
+	CallBackPathCreated OnPathCreated,
+	CallBackPathDeleted OnPathDeleted,
+	CallBackPathContextChanged OnPathContextChanged,
+	CallBackPathChildNumChanged OnPathChildNumChanged) {
+	newNode := NewZkNodeEvents(Path,client.Conn, Handle,
+				CallBackPathCreated, CallBackPathDeleted,
 				CallBackPathContextChanged, CallBackPathChildNumChanged)
 	newNode.Run()
-	client.PathEventsMap.Store(path,newNode)
+	client.PathEventsMap.Store(Path,newNode)
 }
 
 /*
@@ -212,6 +236,7 @@ func (client *ZkClient) DeletePathEvents(path string){
 	停止该zkclient
 */
 func (client *ZkClient) Stop() {
+	client.Conn.Close()
 	client.PathEventsMap.Range( func(key, value interface{}) bool {
 		path := key.(string)
 		client.DeletePathEvents(path)
@@ -219,7 +244,7 @@ func (client *ZkClient) Stop() {
 		return true
 	})
 }
-
+/*
 func CallBackPathCreated  (handle interface{},path string ,nodeValue []byte) {
 
 }
@@ -235,4 +260,5 @@ func CallBackPathContextChanged (handle interface{}  , path string, latestPathVa
 func CallBackPathChildNumChanged (handle interface{} , path string, changeType uint8 , ChangedNode[]string) {
 
 }
+*/
 

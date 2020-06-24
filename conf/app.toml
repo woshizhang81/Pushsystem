@@ -1,2 +1,6 @@
 appname = "push_system"
 role = "gateway" #manager #mod
+
+[zookeeper]
+servers = ["centos-pc1:2181", "centos-pc2:2181","centos-pc2:2181"]
+

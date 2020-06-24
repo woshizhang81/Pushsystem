@@ -8,6 +8,7 @@ import (
 	"time"
 	"fmt"
 	"os"
+	"Pushsystem/src/config"
 )
 
 /*
@@ -23,7 +24,16 @@ import (
 		3> 业务透传协议。 根据 协议中的mode_id  透传信息到各个业务中 动态定制kafkatopick
 		4> 需要满足按 deviceid 和 devicetype 选择发送到gateway的 链接的功能
 */
-
+/*
+	ZooKeeper路径结构 定义
+    功能:服务器动态上线下感知
+	1. gateway 服务 结构定义
+	PushSystem/gatway_{idc(uint16)}   value:json {idc:'tx'}       节点类型，永久节点
+	child {parentPath}/{ip+port}	  value:json {}  负载参数用于负载均衡
+	2. manager 服务 结构定义
+	PushSystem/gatway_{idc(uint16)}   value:json {idc:'tx'}       节点类型，永久节点
+	child {parentPath}/{ip+port}	  value:json {}  内容待定{负载参数用于负载均衡}
+*/
 // 发送心跳帧
 func HeartBeatSend (handle interface{}, id int , param interface{}) {
 	//fmt.Println("HeartBeatSend",time.Now().Second())
@@ -36,13 +46,13 @@ func HeartBeatSend (handle interface{}, id int , param interface{}) {
 // 心跳检查定时器
 func HeartBeatCheck(handle interface{}, id int , param interface{}) {
 	//fmt.Println("HeartBeatCheck",time.Now().Second())
-	vserver  := handle.(* Link)
+	vServer  := handle.(* Link)
 	curTimeCount := time.Now().Unix()
-	if 	vserver.Client.LastHeartBeatCount != 0 && curTimeCount - vserver.Client.LastHeartBeatCount > _const.ClientHeartBeatCheckDur {
+	if 	vServer.Client.LastHeartBeatCount != 0 && curTimeCount - vServer.Client.LastHeartBeatCount > _const.ClientHeartBeatCheckDur {
 		// 未检测到心跳断开了 此时应该重连
-		if vserver.Client.ReStart() {
-			vserver.Client.RestartCount ++
-			if vserver.Client.RestartCount >= _const.ClientRestartTolerantTimes { //连续重启3次失败
+		if vServer.Client.ReStart() {
+			vServer.Client.RestartCount ++
+			if vServer.Client.RestartCount >= _const.ClientRestartTolerantTimes { //连续重启3次失败
 				fmt.Println("连续3次重启失败.... 应该是服务端 关闭了")
 				os.Exit(1)
 			}
@@ -53,51 +63,86 @@ func HeartBeatCheck(handle interface{}, id int , param interface{}) {
 
 
 type VirtualServer struct {
+	ZkServers 	[]string
 	LocalAddr	[_const.NetNodeAddrSize]byte	//本地服务的网路地址
 	ManagerID   [_const.CommonServerIDSize]byte	//解析服务器唯一ID
-	ManagerIDC   uint16		//解析服务的机房
-	LinksMap 	sync.Map	//链接映射表  UniqueID 和 对应gateway 链接的关系
+	ManagerIDC  uint16		//解析服务的机房
+	GateWayIDLinksMap 		sync.Map	//目标target IPaddr(gatewayID)和 对应gateway 链接的关系
+	UniqueIDIpMap 	sync.Map	//终端  UniqueID 和 对应gatewayID 链接的关系 存在redis中
 	Timer		*timer2.CronTimer  //定时器
-	ZkHandel 	zkclient.ZkClient
-
+	ZkHandel 	*zkclient.ZkClient
 }
 
 
-func (vserver * VirtualServer) Initial() {
+func (vServer * VirtualServer) Init() {
+	zkConfig := config.GetZkInstance().LoadConfig()
+	if zkConfig == nil {
+		fmt.Println("zookeeper config loading failed")
+		os.Exit(1)
+	}
+	vServer.ZkServers = zkConfig.Servers
+	vServer.ZkHandel = &zkclient.ZkClient{ZkAddr:zkConfig.Servers}
 	// 读相关 配置文件 填充ManagerID ManagerIDC
 	// 初始化kafka客户端
-	vserver.Timer = &timer2.CronTimer{}
-}
-
-func (vserver * VirtualServer) UnInitial() {
-
-}
-
-func (vserver * VirtualServer) Start() {
-	vserver.Timer.Start()
-}
-
-func (vserver * VirtualServer) Stop() {
-	vserver.Timer.Stop()
+	vServer.Timer = &timer2.CronTimer{}
+	vServer.CreateTimer(_const.ClientHeartBeatDur, _const.ClientHeartBeatCheckDur)
 }
 
 
+func (vServer * VirtualServer) Start() {
+	if !vServer.ZkHandel.Start() {
+		os.Exit(1)
+	}
+	//添加监控路径  监控gateway 的节点事件
+	vServer.ZkHandel.AddPathEvents(_const.ZkGateWayParentNodeName,
+		vServer,
+		CallBackPathCreated,
+		CallBackPathDeleted,
+		CallBackPathContextChanged,
+		CallBackPathChildNumChanged	)
+	vServer.Timer.Start()
+}
 
-func (vserver * VirtualServer) CreateTimer(hbdur ,  hbcheck int32) bool {
-	//vserver.CreateTimer(_const.ClientHeartBeatDur, _const.ClientHeartBeatCheckDur)
+
+func (vServer * VirtualServer) Stop() {
+	vServer.ZkHandel.Stop()
+	vServer.StopTimer()
+}
+
+
+
+func (vServer * VirtualServer) CreateTimer(hbdur ,  hbcheck int32) bool {
 	//开启定时器 30s心跳检测回调
-	vserver.Timer = &timer2.CronTimer{}
-	vserver.Timer.Start()
-	vserver.Timer.Add(HeartBeatSend,vserver, nil , hbdur)
-	vserver.Timer.Add(HeartBeatCheck,vserver, nil , hbcheck)
+	vServer.Timer.Add(HeartBeatSend  , vServer, nil , hbdur)
+	vServer.Timer.Add(HeartBeatCheck , vServer, nil , hbcheck)
 	return true
 }
 
-func (vserver * VirtualServer) StopTimer() bool {
+func (vServer * VirtualServer) StopTimer() bool {
 	//开启定时器 30s心跳检测回调
-	vserver.Timer.Stop()
+	vServer.Timer.Stop()
 	return true
 }
+
+func CallBackPathCreated  (handle interface{},path string ,nodeValue []byte) {
+
+}
+
+func CallBackPathDeleted (handle interface{},path string){
+
+}
+
+func CallBackPathContextChanged (handle interface{}  , path string, latestPathValue []byte ,currentPathValue []byte){
+
+}
+
+func CallBackPathChildNumChanged (handle interface{} , path string, changeType uint8 , ChangedNode string) {
+	// 主要 适用的事件
+	if changeType ==  zkclient.ZKChildAdd {
+		//
+	}
+}
+
 
 
 
