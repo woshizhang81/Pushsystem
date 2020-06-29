@@ -3,12 +3,13 @@ package utils
 import (
 	"crypto/md5"
 	"fmt"
+	"golang.org/x/net/ipv4"
 	"hash/crc32"
+	"math/rand"
 	"net"
 	"os"
-	"math/rand"
-	"time"
 	"strconv"
+	"time"
 )
 
 /*
@@ -36,6 +37,11 @@ func UniqueId(idType int32 ,deviceId string) string {
 	str := string(idType) + deviceId
 	data := []byte(str)
 	has := md5.Sum(data)
+	md5str := fmt.Sprintf("%x", has)
+	return md5str
+}
+func MD5(str string) string {
+	has := md5.Sum([]byte(str))
 	md5str := fmt.Sprintf("%x", has)
 	return md5str
 }
@@ -155,3 +161,6 @@ func FindDifferentSlice(ele1 ,ele2 []string) []string {
 	}
 	return retArray
 }
+
+
+

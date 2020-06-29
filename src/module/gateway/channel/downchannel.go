@@ -38,7 +38,7 @@ func TaskLineExcuteDown(args interface{}) {
 	UniqueID  :=  protocol.GetUniqueIdFromFrame(frameBuf)
 
 	frontEnd := body.Consumer.(*frontend.FrontModule)
-	if FrameType == _const.PROTO_TYPE_MAP_REGISTER_DEVICE {
+	if FrameType == _const.ProtoTypeMapRegisterDevice {
 		// 说明是设备注册帧
 		// 解包, 更新 SessionByID 和 SessionByIP
 		pro := protocol.Protocol{}
@@ -65,7 +65,7 @@ func TaskLineExcuteDown(args interface{}) {
 			fmt.Println("逻辑错误异常，此处情况 是，注册帧未返回，连接就断开了。。几乎不可能出现")
 			//os.Exit(1)
 		}
-	} else if FrameType == _const.PROTO_TYPE_MAP_HEARTBEAT_DEVICE {
+	} else if FrameType == _const.ProtoTypeMapHeartbeatDevice {
 		//说明是设备心跳帧 更新SessionByID时间戳
 		val,ok := frontEnd.SessionByIDManager.Get(UniqueID)
 		if ok {

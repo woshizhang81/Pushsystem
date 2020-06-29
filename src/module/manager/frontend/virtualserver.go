@@ -1,14 +1,18 @@
 package frontend
 
 import (
-	"Pushsystem/src/pkg/tools/zkclient"
-	"sync"
+	"Pushsystem/src/config"
 	"Pushsystem/src/const"
+	"Pushsystem/src/pkg/tcpclient"
+	"Pushsystem/src/pkg/tools/zkclient"
+	"Pushsystem/src/protocol"
+	"Pushsystem/src/utils"
 	timer2 "Pushsystem/src/utils/timer"
-	"time"
+	"crypto"
+	"crypto/md5"
 	"fmt"
 	"os"
-	"Pushsystem/src/config"
+	"sync"
 )
 
 /*
@@ -35,30 +39,7 @@ import (
 	child {parentPath}/{ip+port}	  value:json {}  内容待定{负载参数用于负载均衡}
 */
 // 发送心跳帧
-func HeartBeatSend (handle interface{}, id int , param interface{}) {
-	//fmt.Println("HeartBeatSend",time.Now().Second())
-	//client  := handle.(* TcpClient)
-	/*if client.LastHeartBeatCount == 0 {
-		client.LastHeartBeatCount = time.Now().Unix()
-	}*/
-}
 
-// 心跳检查定时器
-func HeartBeatCheck(handle interface{}, id int , param interface{}) {
-	//fmt.Println("HeartBeatCheck",time.Now().Second())
-	vServer  := handle.(* Link)
-	curTimeCount := time.Now().Unix()
-	if 	vServer.Client.LastHeartBeatCount != 0 && curTimeCount - vServer.Client.LastHeartBeatCount > _const.ClientHeartBeatCheckDur {
-		// 未检测到心跳断开了 此时应该重连
-		if vServer.Client.ReStart() {
-			vServer.Client.RestartCount ++
-			if vServer.Client.RestartCount >= _const.ClientRestartTolerantTimes { //连续重启3次失败
-				fmt.Println("连续3次重启失败.... 应该是服务端 关闭了")
-				os.Exit(1)
-			}
-		}
-	}
-}
 
 
 
@@ -67,8 +48,8 @@ type VirtualServer struct {
 	LocalAddr	[_const.NetNodeAddrSize]byte	//本地服务的网路地址
 	ManagerID   [_const.CommonServerIDSize]byte	//解析服务器唯一ID
 	ManagerIDC  uint16		//解析服务的机房
-	GateWayIDLinksMap 		sync.Map	//目标target IPaddr(gatewayID)和 对应gateway 链接的关系
-	UniqueIDIpMap 	sync.Map	//终端  UniqueID 和 对应gatewayID 链接的关系 存在redis中
+	GateWayIDLinksMap 		sync.Map	//目标target IPaddr(gatewayID)和 对应gateway client 客户端链接的关系
+	UniqueIDIpMap 			sync.Map	//终端  UniqueID 和 对应gatewayID 链接的关系 存在redis中
 	Timer		*timer2.CronTimer  //定时器
 	ZkHandel 	*zkclient.ZkClient
 }
@@ -103,18 +84,15 @@ func (vServer * VirtualServer) Start() {
 	vServer.Timer.Start()
 }
 
-
 func (vServer * VirtualServer) Stop() {
 	vServer.ZkHandel.Stop()
 	vServer.StopTimer()
 }
 
-
-
-func (vServer * VirtualServer) CreateTimer(hbdur ,  hbcheck int32) bool {
+func (vServer * VirtualServer) CreateTimer(hbDur ,  hbCheck int32) bool {
 	//开启定时器 30s心跳检测回调
-	vServer.Timer.Add(HeartBeatSend  , vServer, nil , hbdur)
-	vServer.Timer.Add(HeartBeatCheck , vServer, nil , hbcheck)
+	vServer.Timer.Add(HeartBeatSend  , vServer, nil , hbDur)
+	vServer.Timer.Add(HeartBeatCheck , vServer, nil , hbCheck)
 	return true
 }
 
@@ -136,10 +114,109 @@ func CallBackPathContextChanged (handle interface{}  , path string, latestPathVa
 
 }
 
+func HeartBeatSend (handle interface{}, id int , param interface{}) {
+	vServer  := handle.(* VirtualServer)
+	//curTimeCount := time.Now().Unix()
+	vServer.GateWayIDLinksMap.Range(func (key interface{},value interface{}) bool {
+		//remoteServer := key.(string)
+		cli := value.(*tcpclient.TcpClient)
+		//msg := cli.ProtocolHandler.Package()
+		cli.ProtocolHandler.PackType 	 	= _const.ProtoTypeMapHeartbeatManager
+		 ok , addr , idc :=utils.GetServerInstance()
+		if !ok {
+			fmt.Println("should not be here")
+			panic("should not be here")
+		}
+		copy(cli.ProtocolHandler.Head.ManagerID[:]  ,[]byte(utils.MD5(addr))[:])
+		cli.ProtocolHandler.Head.ManagerIDC = idc
+		//todo :心跳帧待定义
+		HeartBeatFrame := cli.ProtocolHandler.Package()
+		cli.Send(HeartBeatFrame)
+
+		return true
+	})
+}
+
+// 心跳检查定时器
+func HeartBeatCheck(handle interface{}, id int , param interface{}) {
+	//fmt.Println("HeartBeatCheck",time.Now().Second())
+	//todo:心跳检查 个人觉得没有必要，利用zookeeper高可用集群作判断 足够了,预留 心跳检测的逻辑。作备用方案
+	//vServer  := handle.(* VirtualServer)
+	//curTimeCount := time.Now().Unix()
+	/*vServer.GateWayIDLinksMap.Range(func (key interface{},value interface{}) bool {
+		remoteServer := key.(string)
+		cli := value.(*tcpclient.TcpClient)
+		if 	cli.LastHeartBeatCount != -2 && curTimeCount - cli.LastHeartBeatCount > _const.ClientHeartBeatCheckDur {
+			if cli.ReStart() {
+				cli.RestartCount++
+				if cli.RestartCount >= _const.ClientRestartTolerantTimes { //连续重启1次失败
+					fmt.Println(remoteServer,"连续1次重启失败.... 应该是服务端 关闭了")
+
+					//os.Exit(-1)
+				}
+			}
+		}
+		return true
+	})*/
+}
+
+func OnRecvFrame(handle interface{}, remoteAddr string ,buf []byte) {
+	//主要的协议解析逻辑在这里
+	vServer := handle.(* VirtualServer)
+	protoHandler := &protocol.Protocol{}
+	protoHandler.UnPacking(buf) //解析出协议的结构体
+
+	cli,err := vServer.GateWayIDLinksMap.Load(remoteAddr) //一定存在该client的 映射关系
+	var client *tcpclient.TcpClient
+	if err {
+		client = cli.(* tcpclient.TcpClient)
+	}else{
+		fmt.Println("this cannot happened !!")
+		panic("this cannot happened")
+	}
+	switch protoHandler.PackType {
+	case _const.ProtoTypeMapRegisterDevice:    //设备注册的协议类型
+		vServer.OnGetDeviceRegister(client ,protoHandler)
+	case _const.ProtoTypeMapHeartbeatDevice:   //设备心跳的协议类型
+		vServer.OnGetDeviceHeartBeat(client , protoHandler)
+	case _const.ProtoTypeMapRegisterManager:   //manager注册的协议类型
+		vServer.OnGetManagerRegister(client , protoHandler)
+	case _const.ProtoTypeMapHeartbeatManager:  //manager心跳的协议类型
+		vServer.OnGetManagerHeartBeat(client , protoHandler)
+	case _const.ProtoTypeMapPush:              //推送的协议类型
+		vServer.OnGetPush(client , protoHandler)
+	case _const.ProtoTypeMapTransmission:      //透传的协议类型
+		vServer.OnGetTransmission(client , protoHandler)
+	case _const.ProtoTypeMapDisconnect:        //客户端主动断开连接协议类型
+	default:
+		fmt.Println("unrecognized commander!!")
+	}
+}
+
 func CallBackPathChildNumChanged (handle interface{} , path string, changeType uint8 , ChangedNode string) {
-	// 主要 适用的事件
-	if changeType ==  zkclient.ZKChildAdd {
-		//
+	// 主要 //监控子节点的 事件。动态监控gateway 服务器。适用的事件
+	vServer := handle.(* VirtualServer)
+	zkPath := path
+	targetAddr := ChangedNode
+	fmt.Println("addr:",targetAddr,"parentpath:",zkPath,"event:",changeType)
+	switch changeType {
+	case zkclient.ZKChildAdd: //模拟accept 到客户端
+		//建立连接
+		cli := tcpclient.TcpClient{TaskHandle:vServer,
+			CallbackFun:OnRecvFrame,
+			ProtocolHandler:&protocol.Protocol{}}
+		ok := cli.Start(targetAddr)
+		if ok {
+			vServer.GateWayIDLinksMap.Store(targetAddr,cli)
+		}
+	case zkclient.ZKChildDel: //模拟检测到客户端断开
+		cli,ok := vServer.GateWayIDLinksMap.Load(targetAddr)
+		if ok {
+			client := cli.(* tcpclient.TcpClient)
+			client.Stop()
+		}
+	default:
+		break
 	}
 }
 

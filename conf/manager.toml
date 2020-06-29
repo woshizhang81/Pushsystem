@@ -1,0 +1,4 @@
+module = "manager"
+ipver = 4 #ipv4 还是ipv6
+port = 2121 #对manager而言 该port仅仅为占位符
+idc = 1

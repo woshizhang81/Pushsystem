@@ -1,37 +1,28 @@
 package tcpclient
 
 import (
-	"os"
+	"Pushsystem/src/protocol"
+	"bufio"
 	"fmt"
 	"net"
-	"bufio"
-
-	"Pushsystem/src/const"
-	"time"
+	"os"
+	"sync"
 )
 
-type RecvFrameCallBack func  (handle interface{}, buf []byte)
+type RecvFrameCallBack func  (handle interface{}, remoteAddr string ,buf []byte)
 type  TcpClient struct {
 	TaskHandle interface{}
-	TargetIp   		string
-	TargetPort 		uint16
 	CreateTime 		uint64
 	LastHeartBeatCount 	int64
 	HeartBeatErrorTimes uint8  //心跳容错次数 最大为3
 	RestartCount 		uint8   //重启次数
-	callbackfun 	RecvFrameCallBack
+	CallbackFun 	RecvFrameCallBack
 	//IsRecvThreadExist   bool    // 接收线程是否存在 相应逻辑该否补充
 	Conn     	*net.TCPConn
-	hawkServer  *net.TCPAddr
+	HawkServer  *net.TCPAddr
+	ProtocolHandler * protocol.Protocol
+	wg *sync.WaitGroup //todo：接收go程的唯一性判断标志 带补充
 }
-
-
-func (client * TcpClient) SetRecieveCallback(handle  interface{},cbfun RecvFrameCallBack ) {
-	client.TaskHandle = handle
-	client.callbackfun = cbfun
-}
-
-
 
 /*
 	开启定时器
@@ -40,7 +31,7 @@ func (client * TcpClient) SetRecieveCallback(handle  interface{},cbfun RecvFrame
 
 func (client * TcpClient) ReStart() bool {
 	//连接服务器
-	conn,err := net.DialTCP("tcp",nil,client.hawkServer)
+	conn,err := net.DialTCP("tcp",nil,client.HawkServer)
 	if err != nil {
 		fmt.Printf("connect to hawk server error: [%s]",err.Error())
 		return false
@@ -53,6 +44,7 @@ func (client * TcpClient) ReStart() bool {
 
 func (client * TcpClient) Start(server string) bool{
 	//开启定时器
+	//client.wg = &sync.WaitGroup{}
 	hawkServer,err := net.ResolveTCPAddr("tcp", server)
 	if err != nil {
 		fmt.Printf("hawk server [%s] resolve error: [%s]",server,err.Error())
@@ -66,7 +58,7 @@ func (client * TcpClient) Start(server string) bool{
 	}
 
 	client.Conn = conn
-	client.hawkServer = hawkServer
+	client.HawkServer = hawkServer
 	client.StartRecv()
 	return true
 }
@@ -108,10 +100,10 @@ func receivePackets(client *TcpClient) {
 		n , err := reader.Read(buf)
 		if n == 0 || err != nil {
 			fmt.Printf("read from connect failed, err: %v\n", err)
-			break;
+			break
 		}
-		if client.callbackfun != nil  && client.TaskHandle != nil {
-			client.callbackfun(client.TaskHandle,buf[:n]) //调用回掉
+		if client.CallbackFun != nil  && client.TaskHandle != nil {
+			client.CallbackFun(client.TaskHandle,client.HawkServer.String(), buf[:n]) //调用回掉
 		}
 	}
 	fmt.Println("Recieve go routinue finished")

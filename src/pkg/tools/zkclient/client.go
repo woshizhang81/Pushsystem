@@ -3,6 +3,8 @@ package zkclient
 import (
 	_const "Pushsystem/src/const"
 	"Pushsystem/src/utils"
+	"encoding/json"
+	"fmt"
 	"github.com/samuel/go-zookeeper/zk"
 	"log"
 	"sync"
@@ -122,18 +124,18 @@ func watchChildrenChanged(events * ZkNodeEvents ,Id uint8) {
 			}
 			OldChildes := events.OldNodeEventContext.ChildNodeNames
 			diffChildArray  := utils.FindDifferentSlice(OldChildes,CurChildes)
+			var eventType uint8
 			if len(CurChildes) > len (OldChildes) {
 				//比原来增加了 找出
-				for i := 0;i< len(CurChildes) ; i++  {
-					events.CallBackChildChanged(events.CallBackHandle,e.Path,ZKChildAdd,diffChildArray[i])
-				}
+				eventType = ZKChildAdd
 			}else if len(CurChildes) < len(OldChildes) {
 				//比软来减少了，找出减少的 childPath
-				for i := 0;i< len(CurChildes) ; i++  {
-					events.CallBackChildChanged(events.CallBackHandle,e.Path,ZKChildDel,diffChildArray[i])
-				}
+				eventType = ZKChildDel
 			}else {
 				panic("this cannot happend")
+			}
+			for i := 0;i< len(CurChildes) ; i++  {
+				events.CallBackChildChanged(events.CallBackHandle,e.Path,eventType,diffChildArray[i])
 			}
 			log.Println("ChildrenW:", e.Type, "Event:", e)
 		}
@@ -141,8 +143,10 @@ func watchChildrenChanged(events * ZkNodeEvents ,Id uint8) {
 	events.wg.Done()
 }
 
-func (events * ZkNodeEvents)Run(){
+
+func (events * ZkNodeEvents)GetCurNodeOldContext(){
 	//先把对应的节点数据拿到
+	//todo: 每个机房 绑定events.OldNodeEventContext.IDCNodeMap = make(map[uint16] *NodeObject)
 	events.OldNodeEventContext.NodeName = events.NodeName
 	//获取该节点内容
 	value,_,err := events.Conn.Get(events.NodeName)
@@ -151,12 +155,15 @@ func (events * ZkNodeEvents)Run(){
 	}
 	events.OldNodeEventContext.NodeContext= value
 	// 获取该节点的child列表
-	childs,_,errch := events.Conn.Children(events.NodeName)
-	if errch != nil {
+	childes,_, errCh := events.Conn.Children(events.NodeName)
+	if errCh != nil {
 		panic("this cannot happend")
 	}
-	events.OldNodeEventContext.ChildNodeNames = childs
+	events.OldNodeEventContext.ChildNodeNames = childes
+}
 
+func (events * ZkNodeEvents)Run(){
+	events.GetCurNodeOldContext()
 	//创建监听事件回掉
 	events.wg = &sync.WaitGroup{}
 	go func(conn *zk.Conn) {
@@ -168,11 +175,30 @@ func (events * ZkNodeEvents)Run(){
 		log.Println("path:",events.NodeName, "Monitor Finished")
 	}(events.Conn)
 }
+// 节点通用json结构定义 todo： 根据具体业务补充 目前定义如下 两个域
+type NodeObject struct{
+	Idc uint16 	//IDC 机房代号
+	IdcName	string // 机房字符串 ”sz“ ”gz“  应该与Idc一一对应
+}
 
 type NodeEventContext struct {
-	NodeContext    []byte   //节点内容
+	NodeContext    []byte   //节点内容  todo:我们约定内容为json 字符串 目前约定{idc="sz"}
 	ChildNodeNames []string //子结点名称
+	//IDCNodeMap	   map[uint16]*NodeObject
 	NodeName       string
+}
+
+/*
+	return
+*/
+func (nodeEventObj *NodeEventContext)GetIdcInfo() *NodeObject {
+	nodeObj := &NodeObject{}
+	err := json.Unmarshal(nodeEventObj.NodeContext,nodeObj)
+	if err != nil {
+		fmt.Println("json parser failed")
+		return nil
+	}
+	return nodeObj
 }
 
 func NewNodeEventContext(nodeName string) *NodeEventContext {
@@ -237,28 +263,10 @@ func (client *ZkClient) DeletePathEvents(path string){
 */
 func (client *ZkClient) Stop() {
 	client.Conn.Close()
-	client.PathEventsMap.Range( func(key, value interface{}) bool {
+	client.PathEventsMap.Range(func(key, value interface{}) bool {
 		path := key.(string)
 		client.DeletePathEvents(path)
 		client.PathEventsMap.Delete(path)
 		return true
 	})
 }
-/*
-func CallBackPathCreated  (handle interface{},path string ,nodeValue []byte) {
-
-}
-
-func CallBackPathDeleted (handle interface{},path string){
-
-}
-
-func CallBackPathContextChanged (handle interface{}  , path string, latestPathValue []byte ,currentPathValue []byte){
-
-}
-
-func CallBackPathChildNumChanged (handle interface{} , path string, changeType uint8 , ChangedNode[]string) {
-
-}
-*/
-

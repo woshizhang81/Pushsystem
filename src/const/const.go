@@ -39,6 +39,6 @@ const ZookeeperChildNodeSize = 100			//zookeeper 每个节点最大子结点数�
 
 const (
 	ZkServerRootName  				= "/push_system"		//zk 根节点名称
-	ZkGateWayParentNodeName			= "/push_system/server_gatway"  //zk gateway 父节点名
+	ZkGateWayParentNodeName			= "/push_system/server_gateway"  //zk gateway 父节点名
 	ZkManagerParentNodeName			= "/push_system/server_manager" //zk manager 父节点名
 )

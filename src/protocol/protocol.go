@@ -19,11 +19,11 @@ type TransHead struct {
 	DeviceID   	[_const.DeviceIDSize]byte //客户端移动端的唯一ID
 	DeviceType  uint8  	 //为兼容多种终端唯一标识
 	ModID     	uint16   //支持最大65535 个应用
-	ModSerID  	[_const.CommonServerIDSize]byte //网关服务器地址  md5 字符串 兼容ip6  v4(v6) md5([ip:port])
+	ModSerID  	[_const.CommonServerIDSize]byte //网关服务器地址  md5 字符串 兼容ip6  v4(v6) md5(ip)
 	ModSerIDC  	uint16   //网关代表机房
-	GateWayID  	[_const.CommonServerIDSize]byte //网关服务器地址
+	GateWayID  	[_const.CommonServerIDSize]byte //网关服务器地址  md5 字符串 兼容ip6  v4(v6) md5(ip)
 	GateWayIDC  uint16   //网关代表机房
-	ManagerID  	[_const.CommonServerIDSize]byte //解析服务器地址
+	ManagerID  	[_const.CommonServerIDSize]byte //解析服务器地址  md5 字符串 兼容ip6  v4(v6) md5(ip)
 	ManagerIDC  uint16   //解析服务器机房
 	ClientAddr 	[_const.NetNodeAddrSize] byte //客户终端端的ip 兼容ip6  v4(v6) [ip:port] 模式
 }
@@ -120,8 +120,8 @@ func (proto *Protocol) Package() []byte  {
 	buf = append(buf, 0,	0)
 	packSizeIndex := len(buf) -2
 	buf = append(buf, proto.Flag[:]...)
-	buf = append(buf,proto.PackType)
-	buf = append(buf,proto.PackID[:]...)
+	buf = append(buf, proto.PackType)
+	buf = append(buf, proto.PackID[:]...)
 
 	head := proto.Head.Package()
 	buf = append(buf,head[:]...)
@@ -145,8 +145,8 @@ func (proto *Protocol) Package() []byte  {
 /*
 	是否为上行数据 ?
 */
-func (transHead * Protocol) IsUpstream()bool {
-	ret := transHead.Flag[1] & 0x01
+func (proto * Protocol) IsUpstream()bool {
+	ret := proto.Flag[1] & 0x01
 	if ret == 1 {
 		return true
 	}else {
@@ -157,8 +157,8 @@ func (transHead * Protocol) IsUpstream()bool {
 /*
 	是否需要应答
 */
-func (transHead * Protocol) NeedAck() bool {
-	ret := transHead.Flag[1] & 0x02
+func (proto * Protocol) NeedAck() bool {
+	ret := proto.Flag[1] & 0x02
 	if ret == 1 {
 		return true
 	}else {
