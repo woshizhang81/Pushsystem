@@ -1,13 +1,12 @@
 package protocol
 
 import (
+	"Pushsystem/src/const"
 	"Pushsystem/src/utils"
 	"encoding/binary"
-	"os"
 	"fmt"
-	"Pushsystem/src/const"
+	"os"
 )
-const BufDefaultSize = 2048
 
 type BodyData interface { //统一为PB格式
 	GetBuffer() []byte   //获得动态buffer 返回buffer长度
@@ -115,7 +114,7 @@ func (proto *Protocol) Init(){
  打包函数
 */
 func (proto *Protocol) Package() []byte  {
-	buf := make([]byte , 0, BufDefaultSize) //创建2048 的切片
+	buf := make([]byte , 0, _const.ProtoDefaultFrameSize) //创建2048 的切片
 	buf = append(buf, proto.PackHead[:]...)
 	buf = append(buf, 0,	0)
 	packSizeIndex := len(buf) -2
@@ -146,7 +145,7 @@ func (proto *Protocol) Package() []byte  {
 	是否为上行数据 ?
 */
 func (proto * Protocol) IsUpstream()bool {
-	ret := proto.Flag[1] & 0x01
+	ret := proto.Flag[1] & _const.ProtoFlagUpStream
 	if ret == 1 {
 		return true
 	}else {
@@ -155,10 +154,29 @@ func (proto * Protocol) IsUpstream()bool {
 }
 
 /*
+	设置Flag 值 ProtoFlagUpStream | ProtoFlagNeedAck
+	todo: Flag 标志待定义
+*/
+func (proto * Protocol) SetFlag ( flag uint16) {
+	high := byte(flag>>8 & 0x00FF)
+	low  := byte(flag & 0x00FF)
+	proto.Flag[1] = proto.Flag[1] | low
+	proto.Flag[0] = proto.Flag[0] | high
+}
+/*
+	清除标志
+*/
+func (proto * Protocol) ClearFlag ( flag uint16) {
+	high := byte(flag>>8 & 0x00FF)
+	low  := byte(flag & 0x00FF)
+	proto.Flag[1] = proto.Flag[1] | ^low
+	proto.Flag[0] = proto.Flag[0] | ^high //按位区反，清除flag 位
+}
+/*
 	是否需要应答
 */
 func (proto * Protocol) NeedAck() bool {
-	ret := proto.Flag[1] & 0x02
+	ret := proto.Flag[1] & _const.ProtoFlagNeedAck
 	if ret == 1 {
 		return true
 	}else {

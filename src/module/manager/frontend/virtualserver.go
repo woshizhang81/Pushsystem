@@ -166,7 +166,7 @@ func OnRecvFrame(handle interface{}, remoteAddr string ,buf []byte) {
 	protoHandler := &protocol.Protocol{}
 	protoHandler.UnPacking(buf) //解析出协议的结构体
 
-	cli,err := vServer.GateWayIDLinksMap.Load(remoteAddr) //一定存在该client的 映射关系
+	cli,err := vServer.GateWayIDLinksMap.Load(utils.MD5(remoteAddr)) //一定存在该client的 映射关系
 	var client *tcpclient.TcpClient
 	if err {
 		client = cli.(* tcpclient.TcpClient)
@@ -207,13 +207,16 @@ func CallBackPathChildNumChanged (handle interface{} , path string, changeType u
 			ProtocolHandler:&protocol.Protocol{}}
 		ok := cli.Start(targetAddr)
 		if ok {
-			vServer.GateWayIDLinksMap.Store(targetAddr,cli)
+			vServer.GateWayIDLinksMap.Store(utils.MD5(targetAddr),cli)
 		}
 	case zkclient.ZKChildDel: //模拟检测到客户端断开
-		cli,ok := vServer.GateWayIDLinksMap.Load(targetAddr)
+		cli,ok := vServer.GateWayIDLinksMap.Load(utils.MD5(targetAddr))
 		if ok {
 			client := cli.(* tcpclient.TcpClient)
+			//vServer.UniqueIDIpMap.Delete()
 			client.Stop()
+			vServer.GateWayIDLinksMap.Delete(utils.MD5(targetAddr))
+			//todo： 清除redis绑定信息，或者等待redis 健自动过期
 		}
 	default:
 		break

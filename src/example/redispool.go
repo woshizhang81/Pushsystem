@@ -60,3 +60,105 @@ func main() {
 	str,_:=red.String(result,err)
 	fmt.Print(str)
 }
+/*
+	key-value 操作
+*/
+func SetKeyValue() {
+	c, err := red.Dial("tcp", "localhost:6379")
+	if err != nil {
+		fmt.Println("conn redis failed,", err)
+		return
+	}
+	defer c.Close()
+	_, err = c.Do("Set", "abc", 100)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	r, err := red.Int(c.Do("Get", "abc"))
+	if err != nil {
+		fmt.Println("get abc failed,", err)
+		return
+	}
+	fmt.Println(r)
+}
+
+/*
+	has操作
+*/
+func HashOperate(){
+	c, err := red.Dial("tcp", "localhost:6379")
+	if err != nil {
+		fmt.Println("conn redis failed,", err)
+		return
+	}
+	defer c.Close()
+	_, err = c.Do("HSet", "books", "abc", 100)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	r, err := red.Int(c.Do("HGet", "books", "abc"))
+	if err != nil {
+		fmt.Println("get abc failed,", err)
+		return
+	}
+	fmt.Println(r)
+}
+
+
+func MSet(){
+		c, err := red.Dial("tcp", "localhost:6379")
+		if err != nil {
+			fmt.Println("conn redis failed,", err)
+			return
+		}
+		defer c.Close()
+		_, err = c.Do("MSet", "abc", 100, "efg", 300)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		r, err := red.Ints(c.Do("MGet", "abc", "efg"))
+		if err != nil {
+			fmt.Println("get abc failed,", err)
+			return
+		}
+		for _, v := range r {
+			fmt.Println(v)
+		}
+}
+
+func SetExpireTime(){
+		c, err := red.Dial("tcp", "localhost:6379")
+		if err != nil {
+			fmt.Println("conn redis failed,", err)
+			return
+		}
+		defer c.Close()
+		_, err = c.Do("expire", "abc", 10)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+}
+
+func QueueOperate(){
+		c, err := red.Dial("tcp", "localhost:6379")
+		if err != nil {
+			fmt.Println("conn redis failed,", err)
+			return
+		}
+		defer c.Close()
+		_, err = c.Do("lpush", "book_list", "abc", "ceg", 300)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		r, err := red.String(c.Do("lpop", "book_list"))
+		if err != nil {
+			fmt.Println("get abc failed,", err)
+			return
+		}
+		fmt.Println(r)
+}

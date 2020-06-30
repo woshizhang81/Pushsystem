@@ -3,7 +3,6 @@ package config
 import (
 	"Pushsystem/src/utils"
 	"github.com/BurntSushi/toml"
-	"icode.baidu.com/baidu/gdp/gdp/store/db"
 	"log"
 	"sync"
 )
@@ -23,7 +22,7 @@ var _managerInstance * ManagerConfig
 var onceManager sync.Once
 
 func GetManagerInstance() *ManagerConfig{
-	once.Do(func(){
+	onceManager.Do(func(){
 		_managerInstance = &ManagerConfig{}
 	})
 	return _managerInstance
